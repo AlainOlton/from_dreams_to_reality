@@ -1,0 +1,21 @@
+node_modules
+# Keep environment variables out of version control
+.env
+
+/generated/prisma
+
+# TypeScript build output
+dist/
+*.js.map
+*.d.ts
+
+# Environment
+.env
+.env.local
+
+# Dependencies
+node_modules/
+
+# Logs
+*.log
+.DS_Store

@@ -1,0 +1,623 @@
+// ============================================================
+//  Internship Monitoring & Connecting System
+//  Prisma Schema — PostgreSQL
+// ============================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+      
+}
+
+// ============================================================
+//  ENUMS
+// ============================================================
+
+enum Role {
+  STUDENT
+  ACADEMIC_SUPERVISOR
+  SITE_SUPERVISOR
+  COMPANY
+  ADMIN
+}
+
+enum InternshipType {
+  ACADEMIC
+  PROFESSIONAL
+}
+
+enum InternshipStatus {
+  DRAFT
+  OPEN
+  CLOSED
+  FILLED
+}
+
+enum ApplicationStatus {
+  APPLIED
+  REVIEWED
+  INTERVIEW_SCHEDULED
+  ACCEPTED
+  REJECTED
+  WITHDRAWN
+}
+
+enum LogbookFrequency {
+  DAILY
+  WEEKLY
+}
+
+enum EvaluationStage {
+  MIDTERM
+  FINAL
+}
+
+enum EvaluationStatus {
+  PENDING
+  SUBMITTED
+  APPROVED
+  REJECTED
+}
+
+enum NotificationType {
+  APPLICATION_UPDATE
+  EVALUATION_DUE
+  LOGBOOK_REMINDER
+  MESSAGE_RECEIVED
+  INTERVIEW_SCHEDULED
+  REPORT_READY
+  SYSTEM
+}
+
+enum ReportType {
+  LOGBOOK_SUMMARY
+  EVALUATION_REPORT
+  PLACEMENT_ANALYTICS
+  INSTITUTIONAL_REPORT
+  COMPLETION_CERTIFICATE
+}
+
+enum MessageStatus {
+  SENT
+  DELIVERED
+  READ
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LATE
+  EXCUSED
+}
+
+// ============================================================
+//  USER & AUTHENTICATION
+// ============================================================
+
+model User {
+  id                String    @id @default(uuid())
+  email             String    @unique
+  password          String
+  role              Role
+  isEmailVerified   Boolean   @default(false)
+  isActive          Boolean   @default(true)
+  emailVerifyToken  String?
+  passwordResetToken String?
+  passwordResetExpiry DateTime?
+  lastLoginAt       DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  studentProfile          StudentProfile?
+  supervisorProfile       SupervisorProfile?
+  companyProfile          CompanyProfile?
+  adminProfile            AdminProfile?
+  sentMessages            Message[]         @relation("SentMessages")
+  receivedMessages        Message[]         @relation("ReceivedMessages")
+  notifications           Notification[]
+  auditLogs               AuditLog[]
+
+  @@map("users")
+}
+
+// ============================================================
+//  PROFILES (one-to-one per role)
+// ============================================================
+
+model StudentProfile {
+  id                  String          @id @default(uuid())
+  userId              String          @unique
+  firstName           String
+  lastName            String
+  phone               String?
+  studentId           String?         @unique
+  department          String?
+  faculty             String?
+  yearOfStudy         Int?
+  institution         String?
+  profilePhotoUrl     String?         // Cloudinary URL
+  cvUrl               String?         // Cloudinary URL (required for professional)
+  applicationLetterUrl String?        // Cloudinary URL (required for professional)
+  bio                 String?
+  skills              String[]        @default([])
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+
+  // Relations
+  user                User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  applications        Application[]
+  logbookEntries      LogbookEntry[]
+  attendanceRecords   AttendanceRecord[]
+  selfAssessments     SelfAssessment[]
+  enrollments         InternshipEnrollment[]
+
+  @@map("student_profiles")
+}
+
+model SupervisorProfile {
+  id                String    @id @default(uuid())
+  userId            String    @unique
+  firstName         String
+  lastName          String
+  phone             String?
+  title             String?
+  department        String?
+  institution       String?
+  specialization    String?
+  profilePhotoUrl   String?   // Cloudinary URL
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  user                    User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  academicAssignments     SupervisorAssignment[] @relation("AcademicSupervisor")
+  siteAssignments         SupervisorAssignment[] @relation("SiteSupervisor")
+  evaluationsGiven        Evaluation[]
+  tasksAssigned           Task[]
+
+  @@map("supervisor_profiles")
+}
+
+model CompanyProfile {
+  id                String    @id @default(uuid())
+  userId            String    @unique
+  companyName       String
+  industry          String?
+  description       String?
+  website           String?
+  phone             String?
+  email             String?
+  addressLine1      String?
+  addressLine2      String?
+  city              String?
+  country           String?
+  latitude          Float?
+  longitude         Float?
+  logoUrl           String?   // Cloudinary URL
+  isVerified        Boolean   @default(false)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  user              User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  internships       Internship[]
+
+  @@map("company_profiles")
+}
+
+model AdminProfile {
+  id              String    @id @default(uuid())
+  userId          String    @unique
+  firstName       String
+  lastName        String
+  phone           String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("admin_profiles")
+}
+
+// ============================================================
+//  INTERNSHIP LISTINGS
+// ============================================================
+
+model Internship {
+  id                  String            @id @default(uuid())
+  companyId           String
+  title               String
+  description         String
+  type                InternshipType
+  status              InternshipStatus  @default(DRAFT)
+  field               String
+  location            String?
+  city                String?
+  country             String?
+  latitude            Float?
+  longitude           Float?
+  isRemote            Boolean           @default(false)
+  isPaid              Boolean           @default(false)
+  stipendAmount       Float?
+  currency            String?           @default("USD")
+  durationWeeks       Int?
+  startDate           DateTime?
+  endDate             DateTime?
+  applicationDeadline DateTime?
+  slots               Int?              @default(1)
+  requirements        String[]          @default([])
+  responsibilities    String[]          @default([])
+  skills              String[]          @default([])
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+
+  // Relations
+  company             CompanyProfile    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  applications        Application[]
+  enrollments         InternshipEnrollment[]
+  bookmarks           Bookmark[]
+
+  @@map("internships")
+}
+
+// ============================================================
+//  APPLICATIONS (Professional internship track)
+// ============================================================
+
+model Application {
+  id                  String            @id @default(uuid())
+  internshipId        String
+  studentId           String
+  status              ApplicationStatus @default(APPLIED)
+  coverLetterUrl      String?           // Cloudinary URL
+  cvUrl               String?           // Cloudinary URL
+  additionalDocUrl    String?           // Cloudinary URL
+  coverLetterText     String?
+  notes               String?
+  rejectionReason     String?
+  appliedAt           DateTime          @default(now())
+  reviewedAt          DateTime?
+  updatedAt           DateTime          @updatedAt
+
+  // Relations
+  internship          Internship        @relation(fields: [internshipId], references: [id], onDelete: Cascade)
+  student             StudentProfile    @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  interview           Interview?
+
+  @@unique([internshipId, studentId])
+  @@map("applications")
+}
+
+model Interview {
+  id                  String    @id @default(uuid())
+  applicationId       String    @unique
+  scheduledAt         DateTime
+  durationMinutes     Int?      @default(30)
+  meetingLink         String?
+  location            String?
+  notes               String?
+  interviewerName     String?
+  calendarEventId     String?   // Google Calendar event ID
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  application         Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@map("interviews")
+}
+
+model Bookmark {
+  id            String        @id @default(uuid())
+  userId        String
+  internshipId  String
+  createdAt     DateTime      @default(now())
+
+  internship    Internship    @relation(fields: [internshipId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, internshipId])
+  @@map("bookmarks")
+}
+
+// ============================================================
+//  INTERNSHIP ENROLLMENT (Academic + Professional monitoring)
+// ============================================================
+
+model InternshipEnrollment {
+  id                String    @id @default(uuid())
+  studentId         String
+  internshipId      String?   // null for academic placements not from listing
+  type              InternshipType
+  companyName       String?   // for academic placements placed externally
+  startDate         DateTime?
+  endDate           DateTime?
+  isActive          Boolean   @default(true)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  student           StudentProfile         @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  internship        Internship?            @relation(fields: [internshipId], references: [id])
+  supervisorAssignment SupervisorAssignment?
+
+  @@map("internship_enrollments")
+}
+
+model SupervisorAssignment {
+  id                  String    @id @default(uuid())
+  enrollmentId        String    @unique
+  academicSupervisorId String?
+  siteSupervisorId    String?
+  assignedAt          DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  // Relations
+  enrollment          InternshipEnrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  academicSupervisor  SupervisorProfile?   @relation("AcademicSupervisor", fields: [academicSupervisorId], references: [id])
+  siteSupervisor      SupervisorProfile?   @relation("SiteSupervisor", fields: [siteSupervisorId], references: [id])
+
+  @@map("supervisor_assignments")
+}
+
+// ============================================================
+//  LOGBOOK & ATTENDANCE
+// ============================================================
+
+model LogbookEntry {
+  id              String            @id @default(uuid())
+  studentId       String
+  enrollmentId    String?
+  frequency       LogbookFrequency
+  entryDate       DateTime
+  weekNumber      Int?
+  activitiesDone  String
+  skillsGained    String?
+  challenges      String?
+  nextWeekPlan    String?
+  supervisorNote  String?
+  isApproved      Boolean           @default(false)
+  approvedAt      DateTime?
+  approvedById    String?
+  attachmentUrl   String?           // Cloudinary URL
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  // Relations
+  student         StudentProfile    @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@map("logbook_entries")
+}
+
+model AttendanceRecord {
+  id            String            @id @default(uuid())
+  studentId     String
+  enrollmentId  String?
+  date          DateTime
+  status        AttendanceStatus
+  checkInTime   DateTime?
+  checkOutTime  DateTime?
+  hoursLogged   Float?
+  note          String?
+  recordedById  String?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  student       StudentProfile    @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, date])
+  @@map("attendance_records")
+}
+
+// ============================================================
+//  TASKS & MILESTONES
+// ============================================================
+
+model Task {
+  id              String    @id @default(uuid())
+  enrollmentId    String?
+  assignedById    String
+  title           String
+  description     String?
+  dueDate         DateTime?
+  isCompleted     Boolean   @default(false)
+  completedAt     DateTime?
+  priority        String?   @default("MEDIUM")
+  attachmentUrl   String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  assignedBy      SupervisorProfile @relation(fields: [assignedById], references: [id])
+
+  @@map("tasks")
+}
+
+// ============================================================
+//  EVALUATIONS
+// ============================================================
+
+model Evaluation {
+  id                    String            @id @default(uuid())
+  enrollmentId          String
+  evaluatorId           String
+  stage                 EvaluationStage
+  status                EvaluationStatus  @default(PENDING)
+  // Scored criteria (1–5 scale)
+  punctuality           Int?
+  communication         Int?
+  technicalSkills       Int?
+  teamwork              Int?
+  initiative            Int?
+  professionalism       Int?
+  overallScore          Float?
+  // Narrative fields
+  strengths             String?
+  areasForImprovement   String?
+  generalComments       String?
+  recommendForHire      Boolean?
+  // Timestamps
+  submittedAt           DateTime?
+  approvedAt            DateTime?
+  approvedById          String?
+  createdAt             DateTime          @default(now())
+  updatedAt             DateTime          @updatedAt
+
+  evaluator             SupervisorProfile @relation(fields: [evaluatorId], references: [id])
+
+  @@unique([enrollmentId, evaluatorId, stage])
+  @@map("evaluations")
+}
+
+model SelfAssessment {
+  id                  String            @id @default(uuid())
+  studentId           String
+  enrollmentId        String?
+  stage               EvaluationStage
+  // Scored criteria (1–5 scale)
+  skillsDeveloped     Int?
+  goalsMet            Int?
+  supervisorSupport   Int?
+  workEnvironment     Int?
+  overallExperience   Int?
+  // Narrative fields
+  achievements        String?
+  challenges          String?
+  lessonsLearned      String?
+  futureGoals         String?
+  submittedAt         DateTime?
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+
+  student             StudentProfile    @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, enrollmentId, stage])
+  @@map("self_assessments")
+}
+
+// ============================================================
+//  REPORTS
+// ============================================================
+
+model Report {
+  id              String      @id @default(uuid())
+  generatedById   String
+  type            ReportType
+  title           String
+  description     String?
+  fileUrl         String?     // Cloudinary URL (PDF or Excel)
+  parameters      Json?       // Filters/config used to generate
+  generatedAt     DateTime    @default(now())
+
+  @@map("reports")
+}
+
+// ============================================================
+//  MESSAGING
+// ============================================================
+
+model Conversation {
+  id            String    @id @default(uuid())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  participants  ConversationParticipant[]
+  messages      Message[]
+
+  @@map("conversations")
+}
+
+model ConversationParticipant {
+  id              String        @id @default(uuid())
+  conversationId  String
+  userId          String
+  joinedAt        DateTime      @default(now())
+  lastReadAt      DateTime?
+
+  conversation    Conversation  @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@unique([conversationId, userId])
+  @@map("conversation_participants")
+}
+
+model Message {
+  id              String          @id @default(uuid())
+  conversationId  String
+  senderId        String
+  receiverId      String?
+  content         String
+  status          MessageStatus   @default(SENT)
+  attachmentUrl   String?         // Cloudinary URL
+  sentAt          DateTime        @default(now())
+  deliveredAt     DateTime?
+  readAt          DateTime?
+
+  conversation    Conversation    @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender          User            @relation("SentMessages", fields: [senderId], references: [id])
+  receiver        User?           @relation("ReceivedMessages", fields: [receiverId], references: [id])
+
+  @@map("messages")
+}
+
+// ============================================================
+//  NOTIFICATIONS
+// ============================================================
+
+model Notification {
+  id          String            @id @default(uuid())
+  userId      String
+  type        NotificationType
+  title       String
+  body        String
+  isRead      Boolean           @default(false)
+  link        String?           // Frontend route to navigate to
+  metadata    Json?
+  createdAt   DateTime          @default(now())
+  readAt      DateTime?
+
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+// ============================================================
+//  ACADEMIC CALENDAR
+// ============================================================
+
+model AcademicCalendar {
+  id            String    @id @default(uuid())
+  title         String
+  description   String?
+  startDate     DateTime
+  endDate       DateTime
+  institution   String?
+  department    String?
+  isPublic      Boolean   @default(true)
+  createdById   String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@map("academic_calendar")
+}
+
+// ============================================================
+//  AUDIT LOG
+// ============================================================
+
+model AuditLog {
+  id          String    @id @default(uuid())
+  userId      String?
+  action      String
+  entity      String
+  entityId    String?
+  oldValue    Json?
+  newValue    Json?
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime  @default(now())
+
+  user        User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("audit_logs")
+}
