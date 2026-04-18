@@ -1,0 +1,2552 @@
+{
+	"openapi": "3.0.0",
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {
+			"MessageResponse": {
+				"description": "Generic success envelope",
+				"properties": {
+					"success": {
+						"type": "boolean"
+					},
+					"message": {
+						"type": "string"
+					},
+					"data": {}
+				},
+				"required": [
+					"success",
+					"message"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"RegisterRequest": {
+				"description": "Body for POST /auth/register",
+				"properties": {
+					"email": {
+						"type": "string",
+						"description": "User email address"
+					},
+					"password": {
+						"type": "string",
+						"description": "Minimum 8 characters"
+					},
+					"role": {
+						"type": "string",
+						"description": "One of: STUDENT | COMPANY | ACADEMIC_SUPERVISOR | SITE_SUPERVISOR | ADMIN"
+					},
+					"firstName": {
+						"type": "string"
+					},
+					"lastName": {
+						"type": "string"
+					},
+					"phone": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"email",
+					"password",
+					"role",
+					"firstName",
+					"lastName"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"LoginRequest": {
+				"description": "Body for POST /auth/login",
+				"properties": {
+					"email": {
+						"type": "string"
+					},
+					"password": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"email",
+					"password"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ForgotPasswordRequest": {
+				"description": "Body for POST /auth/forgot-password",
+				"properties": {
+					"email": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"email"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ResetPasswordRequest": {
+				"description": "Body for POST /auth/reset-password",
+				"properties": {
+					"token": {
+						"type": "string"
+					},
+					"password": {
+						"type": "string",
+						"description": "Minimum 8 characters"
+					}
+				},
+				"required": [
+					"token",
+					"password"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"StudentProfileBody": {
+				"properties": {
+					"firstName": {
+						"type": "string"
+					},
+					"lastName": {
+						"type": "string"
+					},
+					"phone": {
+						"type": "string"
+					},
+					"studentId": {
+						"type": "string"
+					},
+					"department": {
+						"type": "string"
+					},
+					"faculty": {
+						"type": "string"
+					},
+					"yearOfStudy": {
+						"type": "number",
+						"format": "double"
+					},
+					"institution": {
+						"type": "string"
+					},
+					"bio": {
+						"type": "string"
+					},
+					"skills": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"SupervisorProfileBody": {
+				"properties": {
+					"firstName": {
+						"type": "string"
+					},
+					"lastName": {
+						"type": "string"
+					},
+					"phone": {
+						"type": "string"
+					},
+					"title": {
+						"type": "string"
+					},
+					"department": {
+						"type": "string"
+					},
+					"institution": {
+						"type": "string"
+					},
+					"specialization": {
+						"type": "string"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CompanyProfileBody": {
+				"properties": {
+					"companyName": {
+						"type": "string"
+					},
+					"industry": {
+						"type": "string"
+					},
+					"description": {
+						"type": "string"
+					},
+					"website": {
+						"type": "string"
+					},
+					"phone": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"addressLine1": {
+						"type": "string"
+					},
+					"addressLine2": {
+						"type": "string"
+					},
+					"city": {
+						"type": "string"
+					},
+					"country": {
+						"type": "string"
+					},
+					"latitude": {
+						"type": "number",
+						"format": "double"
+					},
+					"longitude": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"StartConversationBody": {
+				"properties": {
+					"recipientId": {
+						"type": "string",
+						"description": "User ID of the person to start a conversation with"
+					}
+				},
+				"required": [
+					"recipientId"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"SendMessageBody": {
+				"properties": {
+					"content": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"content"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"LogbookEntryBody": {
+				"properties": {
+					"frequency": {
+						"type": "string",
+						"description": "DAILY | WEEKLY"
+					},
+					"entryDate": {
+						"type": "string",
+						"description": "ISO 8601 date string"
+					},
+					"weekNumber": {
+						"type": "number",
+						"format": "double"
+					},
+					"activitiesDone": {
+						"type": "string"
+					},
+					"skillsGained": {
+						"type": "string"
+					},
+					"challenges": {
+						"type": "string"
+					},
+					"nextWeekPlan": {
+						"type": "string"
+					},
+					"enrollmentId": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"frequency",
+					"entryDate",
+					"activitiesDone"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Partial_LogbookEntryBody_": {
+				"properties": {
+					"frequency": {
+						"type": "string",
+						"description": "DAILY | WEEKLY"
+					},
+					"entryDate": {
+						"type": "string",
+						"description": "ISO 8601 date string"
+					},
+					"weekNumber": {
+						"type": "number",
+						"format": "double"
+					},
+					"activitiesDone": {
+						"type": "string"
+					},
+					"skillsGained": {
+						"type": "string"
+					},
+					"challenges": {
+						"type": "string"
+					},
+					"nextWeekPlan": {
+						"type": "string"
+					},
+					"enrollmentId": {
+						"type": "string"
+					}
+				},
+				"type": "object",
+				"description": "Make all properties in T optional"
+			},
+			"ApproveEntryBody": {
+				"properties": {
+					"note": {
+						"type": "string",
+						"description": "Optional supervisor note"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"AttendanceBody": {
+				"properties": {
+					"date": {
+						"type": "string",
+						"description": "ISO 8601 date string"
+					},
+					"status": {
+						"type": "string",
+						"description": "PRESENT | ABSENT | LATE | EXCUSED"
+					},
+					"checkInTime": {
+						"type": "string"
+					},
+					"checkOutTime": {
+						"type": "string"
+					},
+					"hoursLogged": {
+						"type": "number",
+						"format": "double"
+					},
+					"note": {
+						"type": "string"
+					},
+					"enrollmentId": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"date",
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"InternshipBody": {
+				"properties": {
+					"title": {
+						"type": "string"
+					},
+					"description": {
+						"type": "string"
+					},
+					"type": {
+						"type": "string",
+						"description": "ACADEMIC | PROFESSIONAL"
+					},
+					"field": {
+						"type": "string"
+					},
+					"location": {
+						"type": "string"
+					},
+					"city": {
+						"type": "string"
+					},
+					"country": {
+						"type": "string"
+					},
+					"latitude": {
+						"type": "number",
+						"format": "double"
+					},
+					"longitude": {
+						"type": "number",
+						"format": "double"
+					},
+					"isRemote": {
+						"type": "boolean"
+					},
+					"isPaid": {
+						"type": "boolean"
+					},
+					"stipendAmount": {
+						"type": "number",
+						"format": "double"
+					},
+					"currency": {
+						"type": "string"
+					},
+					"durationWeeks": {
+						"type": "number",
+						"format": "double"
+					},
+					"startDate": {
+						"type": "string"
+					},
+					"endDate": {
+						"type": "string"
+					},
+					"applicationDeadline": {
+						"type": "string"
+					},
+					"slots": {
+						"type": "number",
+						"format": "double"
+					},
+					"requirements": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"responsibilities": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"skills": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"title",
+					"description",
+					"type",
+					"field"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Partial_InternshipBody_": {
+				"properties": {
+					"title": {
+						"type": "string"
+					},
+					"description": {
+						"type": "string"
+					},
+					"type": {
+						"type": "string",
+						"description": "ACADEMIC | PROFESSIONAL"
+					},
+					"field": {
+						"type": "string"
+					},
+					"location": {
+						"type": "string"
+					},
+					"city": {
+						"type": "string"
+					},
+					"country": {
+						"type": "string"
+					},
+					"latitude": {
+						"type": "number",
+						"format": "double"
+					},
+					"longitude": {
+						"type": "number",
+						"format": "double"
+					},
+					"isRemote": {
+						"type": "boolean"
+					},
+					"isPaid": {
+						"type": "boolean"
+					},
+					"stipendAmount": {
+						"type": "number",
+						"format": "double"
+					},
+					"currency": {
+						"type": "string"
+					},
+					"durationWeeks": {
+						"type": "number",
+						"format": "double"
+					},
+					"startDate": {
+						"type": "string"
+					},
+					"endDate": {
+						"type": "string"
+					},
+					"applicationDeadline": {
+						"type": "string"
+					},
+					"slots": {
+						"type": "number",
+						"format": "double"
+					},
+					"requirements": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"responsibilities": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"skills": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					}
+				},
+				"type": "object",
+				"description": "Make all properties in T optional"
+			},
+			"EvaluationBody": {
+				"properties": {
+					"enrollmentId": {
+						"type": "string"
+					},
+					"stage": {
+						"type": "string",
+						"description": "MIDTERM | FINAL"
+					},
+					"punctuality": {
+						"type": "number",
+						"format": "double",
+						"description": "1–5"
+					},
+					"communication": {
+						"type": "number",
+						"format": "double",
+						"description": "1–5"
+					},
+					"technicalSkills": {
+						"type": "number",
+						"format": "double",
+						"description": "1–5"
+					},
+					"teamwork": {
+						"type": "number",
+						"format": "double",
+						"description": "1–5"
+					},
+					"initiative": {
+						"type": "number",
+						"format": "double",
+						"description": "1–5"
+					},
+					"professionalism": {
+						"type": "number",
+						"format": "double",
+						"description": "1–5"
+					},
+					"strengths": {
+						"type": "string"
+					},
+					"areasForImprovement": {
+						"type": "string"
+					},
+					"generalComments": {
+						"type": "string"
+					},
+					"recommendForHire": {
+						"type": "boolean"
+					}
+				},
+				"required": [
+					"enrollmentId",
+					"stage"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"SelfAssessmentBody": {
+				"properties": {
+					"enrollmentId": {
+						"type": "string"
+					},
+					"stage": {
+						"type": "string",
+						"description": "MIDTERM | FINAL"
+					},
+					"skillsDeveloped": {
+						"type": "number",
+						"format": "double",
+						"description": "1–5"
+					},
+					"goalsMet": {
+						"type": "number",
+						"format": "double",
+						"description": "1–5"
+					},
+					"supervisorSupport": {
+						"type": "number",
+						"format": "double",
+						"description": "1–5"
+					},
+					"workEnvironment": {
+						"type": "number",
+						"format": "double",
+						"description": "1–5"
+					},
+					"overallExperience": {
+						"type": "number",
+						"format": "double",
+						"description": "1–5"
+					},
+					"achievements": {
+						"type": "string"
+					},
+					"challenges": {
+						"type": "string"
+					},
+					"lessonsLearned": {
+						"type": "string"
+					},
+					"futureGoals": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"stage"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ApplyBody": {
+				"properties": {
+					"coverLetterText": {
+						"type": "string",
+						"description": "Optional cover letter text (alternative to uploading a file)"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"UpdateStatusBody": {
+				"properties": {
+					"status": {
+						"type": "string",
+						"description": "APPLIED | REVIEWED | INTERVIEW_SCHEDULED | ACCEPTED | REJECTED | WITHDRAWN"
+					},
+					"rejectionReason": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ScheduleInterviewBody": {
+				"properties": {
+					"scheduledAt": {
+						"type": "string",
+						"description": "ISO 8601 datetime string"
+					},
+					"durationMinutes": {
+						"type": "number",
+						"format": "double"
+					},
+					"meetingLink": {
+						"type": "string"
+					},
+					"location": {
+						"type": "string"
+					},
+					"notes": {
+						"type": "string"
+					},
+					"interviewerName": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"scheduledAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			}
+		},
+		"securitySchemes": {
+			"bearerAuth": {
+				"type": "http",
+				"scheme": "bearer",
+				"bearerFormat": "JWT"
+			}
+		}
+	},
+	"info": {
+		"title": "Internship Monitoring & Connecting System API",
+		"version": "1.0.0",
+		"description": "Full-stack platform bridging students, companies, and supervisors throughout the internship lifecycle.",
+		"license": {
+			"name": "ISC"
+		},
+		"contact": {
+			"name": "API Support"
+		}
+	},
+	"paths": {
+		"/api/auth/register": {
+			"post": {
+				"operationId": "Register",
+				"responses": {
+					"201": {
+						"description": "Created",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Register a new user account.\r\nAn email verification link is sent after successful registration.",
+				"tags": [
+					"Auth"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/RegisterRequest"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/auth/login": {
+			"post": {
+				"operationId": "Login",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Authenticate with email and password.\r\nReturns a JWT bearer token.",
+				"tags": [
+					"Auth"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/LoginRequest"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/auth/verify-email": {
+			"get": {
+				"operationId": "VerifyEmail",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Verify a user's email address using the token sent by email.",
+				"tags": [
+					"Auth"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "token",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/api/auth/forgot-password": {
+			"post": {
+				"operationId": "ForgotPassword",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Request a password reset link.\r\nAlways returns 200 to prevent email enumeration.",
+				"tags": [
+					"Auth"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ForgotPasswordRequest"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/auth/reset-password": {
+			"post": {
+				"operationId": "ResetPassword",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Reset password using the token from the reset email.",
+				"tags": [
+					"Auth"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ResetPasswordRequest"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/auth/me": {
+			"get": {
+				"operationId": "GetMe",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get the currently authenticated user's profile.",
+				"summary": "Get current user",
+				"tags": [
+					"Auth"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/api/users/student/me": {
+			"get": {
+				"operationId": "GetStudentProfile",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get the authenticated student's profile",
+				"tags": [
+					"Users"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": []
+			},
+			"put": {
+				"operationId": "UpdateStudentProfile",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Update the authenticated student's profile",
+				"tags": [
+					"Users"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/StudentProfileBody"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/users/student/me/photo": {
+			"post": {
+				"operationId": "UploadStudentPhoto",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Upload a profile photo for the student.\r\nSend as multipart/form-data with field name `photo`.",
+				"tags": [
+					"Users"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/api/users/student/me/cv": {
+			"post": {
+				"operationId": "UploadStudentCv",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Upload a CV document for the student.\r\nSend as multipart/form-data with field name `cv`.",
+				"tags": [
+					"Users"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/api/users/supervisor/me": {
+			"get": {
+				"operationId": "GetSupervisorProfile",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get the authenticated supervisor's profile",
+				"tags": [
+					"Users"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": []
+			},
+			"put": {
+				"operationId": "UpdateSupervisorProfile",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Update the authenticated supervisor's profile",
+				"tags": [
+					"Users"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/SupervisorProfileBody"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/users/company/me": {
+			"get": {
+				"operationId": "GetCompanyProfile",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get the authenticated company's profile",
+				"tags": [
+					"Users"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": []
+			},
+			"put": {
+				"operationId": "UpdateCompanyProfile",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Update the authenticated company's profile",
+				"tags": [
+					"Users"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CompanyProfileBody"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/users/company/me/logo": {
+			"post": {
+				"operationId": "UploadCompanyLogo",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Upload a company logo.\r\nSend as multipart/form-data with field name `logo`.",
+				"tags": [
+					"Users"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/api/users": {
+			"get": {
+				"operationId": "ListUsers",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "List all users (Admin only)",
+				"tags": [
+					"Users"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/api/users/{id}/toggle-active": {
+			"patch": {
+				"operationId": "ToggleUserActive",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Toggle a user's active status (Admin only)",
+				"tags": [
+					"Users"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/api/notifications": {
+			"get": {
+				"operationId": "GetNotifications",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get the 50 most recent notifications for the authenticated user",
+				"tags": [
+					"Notifications"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/api/notifications/{id}/read": {
+			"patch": {
+				"operationId": "MarkAsRead",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Mark a single notification as read",
+				"tags": [
+					"Notifications"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/api/notifications/read-all": {
+			"patch": {
+				"operationId": "MarkAllAsRead",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Mark all notifications as read for the authenticated user",
+				"tags": [
+					"Notifications"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/api/messages": {
+			"get": {
+				"operationId": "GetConversations",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get all conversations for the authenticated user",
+				"tags": [
+					"Messages"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/api/messages/start": {
+			"post": {
+				"operationId": "StartConversation",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Start or retrieve an existing conversation with another user.\r\nReturns the conversation object (idempotent).",
+				"tags": [
+					"Messages"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/StartConversationBody"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/messages/{conversationId}": {
+			"get": {
+				"operationId": "GetMessages",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get all messages in a conversation",
+				"tags": [
+					"Messages"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "conversationId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"post": {
+				"operationId": "SendMessage",
+				"responses": {
+					"201": {
+						"description": "Created",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Send a message in a conversation.\r\nFile attachments are handled via multipart/form-data in the actual endpoint.\r\nReal-time delivery is handled via Socket.IO (`conversation:{id}` room).",
+				"tags": [
+					"Messages"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "conversationId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/SendMessageBody"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/logbook/me": {
+			"get": {
+				"operationId": "GetMyEntries",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get all logbook entries for the authenticated student",
+				"tags": [
+					"Logbook"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "page",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/api/logbook": {
+			"post": {
+				"operationId": "CreateEntry",
+				"responses": {
+					"201": {
+						"description": "Created",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Create a new logbook entry (Student only).\r\nFile attachment is handled via multipart/form-data in the actual endpoint.",
+				"tags": [
+					"Logbook"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/LogbookEntryBody"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/logbook/{id}": {
+			"put": {
+				"operationId": "UpdateEntry",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Update an existing logbook entry (Student only)",
+				"tags": [
+					"Logbook"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/Partial_LogbookEntryBody_"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/logbook/student/{studentId}": {
+			"get": {
+				"operationId": "GetStudentEntries",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get logbook entries for a specific student (Supervisor / Admin)",
+				"tags": [
+					"Logbook"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "studentId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "page",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/api/logbook/{id}/approve": {
+			"patch": {
+				"operationId": "ApproveEntry",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Approve a logbook entry (Supervisor only)",
+				"tags": [
+					"Logbook"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ApproveEntryBody"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/logbook/attendance/me": {
+			"get": {
+				"operationId": "GetAttendanceSummary",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get attendance summary for the authenticated student",
+				"tags": [
+					"Logbook"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/api/logbook/attendance": {
+			"post": {
+				"operationId": "LogAttendance",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Log attendance for a student (Site Supervisor / Admin)",
+				"tags": [
+					"Logbook"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/AttendanceBody"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/internships": {
+			"get": {
+				"operationId": "ListInternships",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Browse all open internship listings (public)",
+				"tags": [
+					"Internships"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "page",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "type",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "field",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "city",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "isRemote",
+						"required": false,
+						"schema": {
+							"type": "boolean"
+						}
+					},
+					{
+						"in": "query",
+						"name": "isPaid",
+						"required": false,
+						"schema": {
+							"type": "boolean"
+						}
+					},
+					{
+						"in": "query",
+						"name": "search",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"post": {
+				"operationId": "CreateInternship",
+				"responses": {
+					"201": {
+						"description": "Created",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Create a new internship listing (Company only)",
+				"tags": [
+					"Internships"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/InternshipBody"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/internships/{id}": {
+			"get": {
+				"operationId": "GetInternship",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get a single internship by ID (public)",
+				"tags": [
+					"Internships"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"put": {
+				"operationId": "UpdateInternship",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Update an internship listing (Company only)",
+				"tags": [
+					"Internships"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/Partial_InternshipBody_"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "DeleteInternship",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Delete an internship listing (Company or Admin)",
+				"tags": [
+					"Internships"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/api/internships/{id}/bookmark": {
+			"post": {
+				"operationId": "ToggleBookmark",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Toggle bookmark on an internship (Student only)",
+				"tags": [
+					"Internships"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/api/internships/bookmarks/me": {
+			"get": {
+				"operationId": "GetBookmarks",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get current student's bookmarked internships",
+				"tags": [
+					"Internships"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/api/internships/company/mine": {
+			"get": {
+				"operationId": "GetMyInternships",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get internships posted by the authenticated company",
+				"tags": [
+					"Internships"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/api/evaluations": {
+			"post": {
+				"operationId": "SubmitEvaluation",
+				"responses": {
+					"201": {
+						"description": "Created",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Submit a supervisor evaluation for an enrolled student.\r\nRequires ACADEMIC_SUPERVISOR or SITE_SUPERVISOR role.",
+				"tags": [
+					"Evaluations"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/EvaluationBody"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/evaluations/enrollment/{enrollmentId}": {
+			"get": {
+				"operationId": "GetEvaluations",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get all evaluations for a specific enrollment",
+				"tags": [
+					"Evaluations"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "enrollmentId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/api/evaluations/{id}/approve": {
+			"patch": {
+				"operationId": "ApproveEvaluation",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Approve a submitted evaluation (Admin only)",
+				"tags": [
+					"Evaluations"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/api/evaluations/self-assessment": {
+			"post": {
+				"operationId": "SubmitSelfAssessment",
+				"responses": {
+					"201": {
+						"description": "Created",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Submit a student self-assessment (Student only)",
+				"tags": [
+					"Evaluations"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/SelfAssessmentBody"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/evaluations/self-assessment/me": {
+			"get": {
+				"operationId": "GetMySelfAssessments",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get all self-assessments for the authenticated student",
+				"tags": [
+					"Evaluations"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/api/applications/me": {
+			"get": {
+				"operationId": "GetMyApplications",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get all applications submitted by the authenticated student",
+				"tags": [
+					"Applications"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/api/applications/{internshipId}/apply": {
+			"post": {
+				"operationId": "Apply",
+				"responses": {
+					"201": {
+						"description": "Created",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Apply to an internship.\r\nFile uploads (coverLetter, cv, additionalDoc) are handled via multipart/form-data\r\nin the actual endpoint — use the REST client for file uploads.",
+				"tags": [
+					"Applications"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "internshipId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ApplyBody"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/applications/{id}/withdraw": {
+			"patch": {
+				"operationId": "Withdraw",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Withdraw a submitted application (Student only)",
+				"tags": [
+					"Applications"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/api/applications/internship/{internshipId}": {
+			"get": {
+				"operationId": "GetApplicationsForInternship",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get all applications for a specific internship (Company only)",
+				"tags": [
+					"Applications"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "internshipId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/api/applications/{id}/status": {
+			"patch": {
+				"operationId": "UpdateStatus",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Update application status — accept, reject, or move to review (Company only)",
+				"tags": [
+					"Applications"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UpdateStatusBody"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/applications/{id}/interview": {
+			"post": {
+				"operationId": "ScheduleInterview",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Schedule an interview for an application (Company only)",
+				"tags": [
+					"Applications"
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ScheduleInterviewBody"
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "/"
+		}
+	],
+	"tags": [
+		{
+			"name": "Auth",
+			"description": "Authentication & account management"
+		},
+		{
+			"name": "Users",
+			"description": "User profile management"
+		},
+		{
+			"name": "Internships",
+			"description": "Internship listings"
+		},
+		{
+			"name": "Applications",
+			"description": "Internship applications"
+		},
+		{
+			"name": "Logbook",
+			"description": "Logbook entries & attendance"
+		},
+		{
+			"name": "Evaluations",
+			"description": "Supervisor & self evaluations"
+		},
+		{
+			"name": "Messages",
+			"description": "Real-time messaging"
+		},
+		{
+			"name": "Notifications",
+			"description": "In-app notifications"
+		},
+		{
+			"name": "Reports",
+			"description": "PDF / Excel report generation"
+		}
+	]
+}

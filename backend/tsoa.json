@@ -1,0 +1,40 @@
+{
+  "entryFile": "src/app.ts",
+  "noImplicitAdditionalProperties": "throw-on-extras",
+  "controllerPathGlobs": ["src/controllers/tsoa/*.controller.ts"],
+  "spec": {
+    "outputDirectory": "src/docs",
+    "specVersion": 3,
+    "name": "Internship Monitoring & Connecting System API",
+    "description": "Full-stack platform bridging students, companies, and supervisors throughout the internship lifecycle.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "API Support"
+    },
+    "securityDefinitions": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "tags": [
+      { "name": "Auth",          "description": "Authentication & account management" },
+      { "name": "Users",         "description": "User profile management" },
+      { "name": "Internships",   "description": "Internship listings" },
+      { "name": "Applications",  "description": "Internship applications" },
+      { "name": "Logbook",       "description": "Logbook entries & attendance" },
+      { "name": "Evaluations",   "description": "Supervisor & self evaluations" },
+      { "name": "Messages",      "description": "Real-time messaging" },
+      { "name": "Notifications", "description": "In-app notifications" },
+      { "name": "Reports",       "description": "PDF / Excel report generation" }
+    ]
+  },
+  "routes": {
+    "routesDir": "src/docs",
+    "authenticationModule": "src/middleware/auth.middleware",
+    "iocModule": "",
+    "middleware": "express",
+    "esm": false
+  }
+}
