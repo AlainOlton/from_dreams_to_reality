@@ -1,19 +1,9 @@
 import { Prisma, InternshipStatus, InternshipType } from '@prisma/client'
 import { prisma } from '@/config/db'
 import { getPagination, buildPaginatedResult } from '@/utils/pagination'
-import { PaginationQuery } from '@/types/common.types'
+import { CreateInternshipBody, UpdateInternshipBody, InternshipFilterQuery } from '@/types/internship.types'
 
-interface InternshipFilters extends PaginationQuery {
-  field?:    string
-  city?:     string
-  country?:  string
-  isRemote?: string
-  isPaid?:   string
-  type?:     InternshipType
-  search?:   string
-}
-
-export const listInternships = async (filters: InternshipFilters) => {
+export const listInternships = async (filters: InternshipFilterQuery) => {
   const { page, limit, skip } = getPagination(filters)
 
   const where: Prisma.InternshipWhereInput = {
@@ -69,21 +59,38 @@ export const getInternshipById = async (id: string) => {
   return internship
 }
 
-export const createInternship = async (companyId: string, data: Prisma.InternshipCreateInput) => {
+export const createInternship = async (companyId: string, data: CreateInternshipBody) => {
+  const { startDate, endDate, applicationDeadline, ...rest } = data
   return prisma.internship.create({
-    data: { ...data, company: { connect: { id: companyId } } },
+    data: {
+      ...rest,
+      ...(startDate           && { startDate:           new Date(startDate) }),
+      ...(endDate             && { endDate:             new Date(endDate) }),
+      ...(applicationDeadline && { applicationDeadline: new Date(applicationDeadline) }),
+      company: { connect: { id: companyId } },
+    },
   })
 }
 
 export const updateInternship = async (
   id:        string,
   companyId: string,
-  data:      Prisma.InternshipUpdateInput
+  data:      UpdateInternshipBody
 ) => {
   const internship = await prisma.internship.findUnique({ where: { id } })
-  if (!internship)             throw Object.assign(new Error('Internship not found'), { statusCode: 404 })
-  if (internship.companyId !== companyId) throw Object.assign(new Error('Forbidden'), { statusCode: 403 })
-  return prisma.internship.update({ where: { id }, data })
+  if (!internship)                        throw Object.assign(new Error('Internship not found'), { statusCode: 404 })
+  if (internship.companyId !== companyId) throw Object.assign(new Error('Forbidden'),            { statusCode: 403 })
+
+  const { startDate, endDate, applicationDeadline, ...rest } = data
+  return prisma.internship.update({
+    where: { id },
+    data:  {
+      ...rest,
+      ...(startDate           && { startDate:           new Date(startDate) }),
+      ...(endDate             && { endDate:             new Date(endDate) }),
+      ...(applicationDeadline && { applicationDeadline: new Date(applicationDeadline) }),
+    },
+  })
 }
 
 export const deleteInternship = async (id: string, companyId: string) => {

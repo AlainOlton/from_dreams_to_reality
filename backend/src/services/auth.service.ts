@@ -45,7 +45,10 @@ export const registerUser = async (body: RegisterBody) => {
     })
   }
 
-  await sendVerificationEmail(email, emailToken)
+  // Only send if email credentials are configured
+  if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+    await sendVerificationEmail(email, emailToken)
+  }
 
   const token = generateToken({ id: user.id, email: user.email, role: user.role })
   return { token, role: user.role, id: user.id }

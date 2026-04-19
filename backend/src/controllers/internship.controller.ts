@@ -2,10 +2,11 @@ import { Request, Response, NextFunction } from 'express'
 import * as internshipService from '@/services/internship.service'
 import { sendSuccess, sendCreated } from '@/utils/apiResponse'
 import { prisma } from '@/config/db'
+import { CreateInternshipBody, UpdateInternshipBody, InternshipFilterQuery } from '@/types/internship.types'
 
 export const listInternships = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const result = await internshipService.listInternships(req.query as any)
+    const result = await internshipService.listInternships(req.query as InternshipFilterQuery)
     sendSuccess(res, result)
   } catch (err) { next(err) }
 }
@@ -21,7 +22,7 @@ export const createInternship = async (req: Request, res: Response, next: NextFu
   try {
     const company = await prisma.companyProfile.findUnique({ where: { userId: req.user!.id } })
     if (!company) { res.status(404).json({ success: false, message: 'Company profile not found' }); return }
-    const result = await internshipService.createInternship(company.id, req.body)
+    const result = await internshipService.createInternship(company.id, req.body as CreateInternshipBody)
     sendCreated(res, result, 'Internship created')
   } catch (err) { next(err) }
 }
@@ -30,7 +31,7 @@ export const updateInternship = async (req: Request<{ id: string }>, res: Respon
   try {
     const company = await prisma.companyProfile.findUnique({ where: { userId: req.user!.id } })
     if (!company) { res.status(404).json({ success: false, message: 'Company profile not found' }); return }
-    const result = await internshipService.updateInternship(req.params.id, company.id, req.body)
+    const result = await internshipService.updateInternship(req.params.id, company.id, req.body as UpdateInternshipBody)
     sendSuccess(res, result, 'Internship updated')
   } catch (err) { next(err) }
 }
