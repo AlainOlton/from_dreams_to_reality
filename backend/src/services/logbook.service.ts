@@ -19,14 +19,16 @@ export const createEntry = async (studentUserId: string, body: LogbookEntryBody)
   const student = await prisma.studentProfile.findUnique({ where: { userId: studentUserId } })
   if (!student) throw Object.assign(new Error('Student profile not found'), { statusCode: 404 })
 
+  const { entryDate, ...rest } = body
+
   return prisma.logbookEntry.create({
-    data: { ...body, studentId: student.id, entryDate: new Date(body.entryDate) },
+    data: { ...rest, studentId: student.id, entryDate: new Date(entryDate) },
   })
 }
 
 export const getMyEntries = async (studentUserId: string, query: PaginationQuery) => {
   const student = await prisma.studentProfile.findUnique({ where: { userId: studentUserId } })
-  if (!student) throw Object.assign(new Error('Student profile not found'), { statusCode: 404 })
+  if (!student) return buildPaginatedResult([], 0, 1, 20)  // no profile yet → empty
 
   const { page, limit, skip } = getPagination(query)
   const where = { studentId: student.id }

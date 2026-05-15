@@ -24,6 +24,15 @@ export const registerSocketHandlers = (io: Server): void => {
     // Each user joins their own private notification room automatically
     socket.join(`user:${user.id}`)
 
+    // Join a shared room for live internship listing updates
+    socket.on('join_listings', () => {
+      socket.join('listings')
+    })
+
+    socket.on('leave_listings', () => {
+      socket.leave('listings')
+    })
+
     // Join a conversation room for real-time messaging
     socket.on('join_conversation', (conversationId: string) => {
       socket.join(`conversation:${conversationId}`)

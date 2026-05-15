@@ -76,15 +76,27 @@ export const submitSelfAssessment = async (
   const student = await prisma.studentProfile.findUnique({ where: { userId: studentUserId } })
   if (!student) throw Object.assign(new Error('Student profile not found'), { statusCode: 404 })
 
-  return prisma.selfAssessment.upsert({
-    where:  { studentId_enrollmentId_stage: { studentId: student.id, enrollmentId: body.enrollmentId ?? '', stage: body.stage } },
-    create: { ...body, studentId: student.id, submittedAt: new Date() },
-    update: { ...body, submittedAt: new Date() },
+  const enrollmentId = body.enrollmentId ?? null
+
+  // Try update first, then create (avoids the null unique constraint issue)
+  const existing = await prisma.selfAssessment.findFirst({
+    where: { studentId: student.id, enrollmentId, stage: body.stage },
+  })
+
+  if (existing) {
+    return prisma.selfAssessment.update({
+      where: { id: existing.id },
+      data:  { ...body, enrollmentId, submittedAt: new Date() },
+    })
+  }
+
+  return prisma.selfAssessment.create({
+    data: { ...body, studentId: student.id, enrollmentId, submittedAt: new Date() },
   })
 }
 
 export const getMySelfAssessments = async (studentUserId: string) => {
   const student = await prisma.studentProfile.findUnique({ where: { userId: studentUserId } })
-  if (!student) throw Object.assign(new Error('Student profile not found'), { statusCode: 404 })
+  if (!student) return []   // no profile yet → empty list
   return prisma.selfAssessment.findMany({ where: { studentId: student.id }, orderBy: { createdAt: 'desc' } })
 }

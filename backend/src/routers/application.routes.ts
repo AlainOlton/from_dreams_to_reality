@@ -19,12 +19,12 @@ router.get('/me',
   application.getMyApplications)
 
 router.post('/:internshipId/apply',
+  protect, authorize(Role.STUDENT),
   uploadDocument.fields([
     { name: 'coverLetter',   maxCount: 1 },
     { name: 'cv',            maxCount: 1 },
     { name: 'additionalDoc', maxCount: 1 },
   ]),
-  protect, authorize(Role.STUDENT),
   validateUuidParam('internshipId'), validate,
   application.apply)
 

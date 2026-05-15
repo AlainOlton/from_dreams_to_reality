@@ -67,18 +67,20 @@ export class MessageController extends Controller {
    * Send a message in a conversation.
    * File attachments are handled via multipart/form-data in the actual endpoint.
    * Real-time delivery is handled via Socket.IO (`conversation:{id}` room).
+   * NOTE: This tsoa definition is for documentation only — the actual handler
+   * is in message.routes.ts which supports multipart/form-data.
    */
   @Post('{conversationId}')
   @SuccessResponse(201, 'Created')
   public async sendMessage(
     @Path() conversationId: string,
     @Request() req: ExpressRequest,
-    @Body() body: SendMessageBody,
   ): Promise<MessageResponse> {
+    const content = (req.body?.content ?? '').trim()
     const message = await messageService.sendMessage(
       req.user!.id,
       conversationId,
-      body.content,
+      content || '📎',
     )
     this.setStatus(201)
     return { success: true, message: 'Message sent', data: message }

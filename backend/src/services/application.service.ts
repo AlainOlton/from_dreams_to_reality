@@ -2,6 +2,7 @@ import { ApplicationStatus } from '@prisma/client'
 import { prisma } from '@/config/db'
 import { sendApplicationStatusEmail } from '@/services/email.service'
 import { sendApplicationSMS } from '@/services/sms.service'
+import { io } from '@/server'
 
 export const applyToInternship = async (
   studentUserId: string,
@@ -33,7 +34,7 @@ export const applyToInternship = async (
 
 export const getMyApplications = async (studentUserId: string) => {
   const student = await prisma.studentProfile.findUnique({ where: { userId: studentUserId } })
-  if (!student) throw Object.assign(new Error('Student profile not found'), { statusCode: 404 })
+  if (!student) return []   // no profile yet → empty list, not an error
 
   return prisma.application.findMany({
     where:   { studentId: student.id },
@@ -101,6 +102,23 @@ export const updateApplicationStatus = async (
       reviewedAt:      new Date(),
     },
   })
+
+  // When a slot is taken (ACCEPTED), broadcast listing update so all clients refresh
+  if (status === ApplicationStatus.ACCEPTED) {
+    const internship = await prisma.internship.findUnique({
+      where:  { id: application.internshipId },
+      select: { id: true, companyId: true, slots: true, status: true,
+                _count: { select: { applications: true } } },
+    })
+    if (internship) {
+      io.to('listings').emit('internship:updated', {
+        id:       internship.id,
+        companyId: internship.companyId,
+        slots:    internship.slots,
+        status:   internship.status,
+      })
+    }
+  }
 
   // Fire off email + SMS notifications
   const studentEmail = application.student.user.email

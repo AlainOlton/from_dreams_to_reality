@@ -108,6 +108,25 @@ router.post('/company/me/logo', protect, authorize(Role.COMPANY),
   }
 )
 
+// ── All authenticated users — minimal list for messaging ─────
+// Returns only id, role, and name fields — safe for all roles
+router.get('/for-messaging', protect, async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const users = await prisma.user.findMany({
+      where:   { isActive: true, id: { not: req.user!.id } },
+      select: {
+        id: true, email: true, role: true,
+        studentProfile:    { select: { firstName: true, lastName: true, profilePhotoUrl: true } },
+        supervisorProfile: { select: { firstName: true, lastName: true, profilePhotoUrl: true } },
+        companyProfile:    { select: { companyName: true, logoUrl: true } },
+        adminProfile:      { select: { firstName: true, lastName: true } },
+      },
+      orderBy: { createdAt: 'asc' },
+    })
+    sendSuccess(res, users)
+  } catch (err) { next(err) }
+})
+
 // ── Admin — list all users ───────────────────────────────────
 router.get('/', protect, authorize(Role.ADMIN), async (req: Request, res: Response, next: NextFunction) => {
   try {

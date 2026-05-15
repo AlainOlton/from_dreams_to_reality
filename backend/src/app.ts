@@ -11,6 +11,7 @@ import 'dotenv/config'
 import authRoutes         from '@/routers/auth.routes'
 import userRoutes         from '@/routers/user.routes'
 import internshipRoutes   from '@/routers/internship.routes'
+import enrollmentRoutes   from '@/routers/enrollment.routes'
 import applicationRoutes  from '@/routers/application.routes'
 import logbookRoutes      from '@/routers/logbook.routes'
 import evaluationRoutes   from '@/routers/evaluation.routes'
@@ -86,19 +87,20 @@ app.use(
   })
 )
 
-// ── tsoa generated routes ────────────────────────────────────
-RegisterRoutes(app)
-
 // ── API routes ───────────────────────────────────────────────
-app.use('/api/auth',          authRoutes)
-app.use('/api/users',         userRoutes)
-app.use('/api/internships',   internshipRoutes)
-app.use('/api/applications',  applicationRoutes)
-app.use('/api/logbook',       logbookRoutes)
-app.use('/api/evaluations',   evaluationRoutes)
-app.use('/api/reports',       reportRoutes)
-app.use('/api/messages',      messageRoutes)
-app.use('/api/notifications', notificationRoutes)
+app.use('/api/auth',                   authRoutes)
+app.use('/api/users',                  userRoutes)
+app.use('/api/internships/enrollments',enrollmentRoutes)
+app.use('/api/internships',            internshipRoutes)
+app.use('/api/applications',           applicationRoutes)
+app.use('/api/logbook',                logbookRoutes)
+app.use('/api/evaluations',            evaluationRoutes)
+app.use('/api/reports',                reportRoutes)
+app.use('/api/messages',               messageRoutes)
+app.use('/api/notifications',          notificationRoutes)
+
+// ── tsoa generated routes (docs only — must come AFTER real routes) ──
+RegisterRoutes(app)
 
 // ── 404 handler ──────────────────────────────────────────────
 app.use((_req: Request, res: Response) => {

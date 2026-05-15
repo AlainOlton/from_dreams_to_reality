@@ -26,8 +26,8 @@ router.get('/:conversationId',
   message.getMessages)
 
 router.post('/:conversationId',
-  uploadAttachment.single('attachment'),
   protect,
+  uploadAttachment.single('attachment'),
   validateUuidParam('conversationId'), validateSendMessage, validate,
   message.sendMessage)
 

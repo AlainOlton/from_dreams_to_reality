@@ -232,18 +232,6 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"SendMessageBody": {
-				"properties": {
-					"content": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"content"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
 			"LogbookEntryBody": {
 				"properties": {
 					"frequency": {
@@ -1710,7 +1698,7 @@
 						}
 					}
 				},
-				"description": "Send a message in a conversation.\r\nFile attachments are handled via multipart/form-data in the actual endpoint.\r\nReal-time delivery is handled via Socket.IO (`conversation:{id}` room).",
+				"description": "Send a message in a conversation.\r\nFile attachments are handled via multipart/form-data in the actual endpoint.\r\nReal-time delivery is handled via Socket.IO (`conversation:{id}` room).\r\nNOTE: This tsoa definition is for documentation only — the actual handler\r\nis in message.routes.ts which supports multipart/form-data.",
 				"tags": [
 					"Messages"
 				],
@@ -1728,17 +1716,7 @@
 							"type": "string"
 						}
 					}
-				],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/SendMessageBody"
-							}
-						}
-					}
-				}
+				]
 			}
 		},
 		"/api/logbook/me": {

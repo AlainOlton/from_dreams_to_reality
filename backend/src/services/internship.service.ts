@@ -2,6 +2,12 @@ import { Prisma, InternshipStatus, InternshipType } from '@prisma/client'
 import { prisma } from '@/config/db'
 import { getPagination, buildPaginatedResult } from '@/utils/pagination'
 import { CreateInternshipBody, UpdateInternshipBody, InternshipFilterQuery } from '@/types/internship.types'
+import { io } from '@/server'
+
+// Broadcast a listing change to everyone watching the listings room
+const broadcastListingChange = (event: 'internship:created' | 'internship:updated' | 'internship:deleted', payload: object) => {
+  try { io.to('listings').emit(event, payload) } catch { /* server may not be ready yet */ }
+}
 
 export const listInternships = async (filters: InternshipFilterQuery) => {
   const { page, limit, skip } = getPagination(filters)
@@ -61,7 +67,7 @@ export const getInternshipById = async (id: string) => {
 
 export const createInternship = async (companyId: string, data: CreateInternshipBody) => {
   const { startDate, endDate, applicationDeadline, ...rest } = data
-  return prisma.internship.create({
+  const internship = await prisma.internship.create({
     data: {
       ...rest,
       ...(startDate           && { startDate:           new Date(startDate) }),
@@ -69,7 +75,10 @@ export const createInternship = async (companyId: string, data: CreateInternship
       ...(applicationDeadline && { applicationDeadline: new Date(applicationDeadline) }),
       company: { connect: { id: companyId } },
     },
+    include: { company: { select: { companyName: true, logoUrl: true } } },
   })
+  broadcastListingChange('internship:created', { id: internship.id, companyId })
+  return internship
 }
 
 export const updateInternship = async (
@@ -82,7 +91,7 @@ export const updateInternship = async (
   if (internship.companyId !== companyId) throw Object.assign(new Error('Forbidden'),            { statusCode: 403 })
 
   const { startDate, endDate, applicationDeadline, ...rest } = data
-  return prisma.internship.update({
+  const updated = await prisma.internship.update({
     where: { id },
     data:  {
       ...rest,
@@ -91,6 +100,8 @@ export const updateInternship = async (
       ...(applicationDeadline && { applicationDeadline: new Date(applicationDeadline) }),
     },
   })
+  broadcastListingChange('internship:updated', { id: updated.id, companyId, slots: updated.slots, status: updated.status })
+  return updated
 }
 
 export const deleteInternship = async (id: string, companyId: string) => {
@@ -98,6 +109,7 @@ export const deleteInternship = async (id: string, companyId: string) => {
   if (!internship)             throw Object.assign(new Error('Internship not found'), { statusCode: 404 })
   if (internship.companyId !== companyId) throw Object.assign(new Error('Forbidden'), { statusCode: 403 })
   await prisma.internship.delete({ where: { id } })
+  broadcastListingChange('internship:deleted', { id, companyId })
 }
 
 export const toggleBookmark = async (userId: string, internshipId: string) => {

@@ -19,8 +19,8 @@ router.get('/me',
   logbook.getMyEntries)
 
 router.post('/',
-  uploadAttachment.single('attachment'),
   protect, authorize(Role.STUDENT),
+  uploadAttachment.single('attachment'),
   validateLogbookEntry, validate,
   logbook.createEntry)
 

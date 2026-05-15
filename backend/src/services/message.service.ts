@@ -56,15 +56,11 @@ export const getConversations = async (userId: string) => {
     where:   { participants: { some: { userId } } },
     orderBy: { updatedAt: 'desc' },
     include: {
-      participants: {
-        where:   { userId: { not: userId } },
-        include: {
-          // @ts-ignore — nested select via custom relation
-        },
-      },
+      participants: true,
       messages: {
         orderBy: { sentAt: 'desc' },
         take:    1,
+        include: { sender: { select: { id: true, role: true } } },
       },
     },
   })

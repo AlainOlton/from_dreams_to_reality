@@ -138,14 +138,6 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "SendMessageBody": {
-        "dataType": "refObject",
-        "properties": {
-            "content": {"dataType":"string","required":true},
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "LogbookEntryBody": {
         "dataType": "refObject",
         "properties": {
@@ -1271,7 +1263,6 @@ export function RegisterRoutes(app: Router) {
         const argsMessageController_sendMessage: Record<string, TsoaRoute.ParameterSchema> = {
                 conversationId: {"in":"path","name":"conversationId","required":true,"dataType":"string"},
                 req: {"in":"request","name":"req","required":true,"dataType":"object"},
-                body: {"in":"body","name":"body","required":true,"ref":"SendMessageBody"},
         };
         app.post('/api/messages/:conversationId',
             authenticateMiddleware([{"bearerAuth":[]}]),

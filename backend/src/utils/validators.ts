@@ -238,8 +238,8 @@ export const validateSelfAssessment = [
 export const validateSendMessage = [
   body('content')
     .trim()
-    .notEmpty().withMessage('Message content is required')
     .isLength({ max: 5000 }).withMessage('Message must be 5000 characters or fewer'),
+    // content can be empty when sending attachment-only messages
 ]
 
 export const validateStartConversation = [

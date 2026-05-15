@@ -27,10 +27,18 @@ export const getMessages = async (req: Request<{ conversationId: string }>, res:
 export const sendMessage = async (req: Request<{ conversationId: string }>, res: Response, next: NextFunction): Promise<void> => {
   try {
     const attachmentUrl = (req.file as any)?.path
+    const content = (req.body.content ?? '').trim()
+
+    // Must have content or attachment
+    if (!content && !attachmentUrl) {
+      res.status(400).json({ success: false, message: 'Message must have content or an attachment' })
+      return
+    }
+
     const message = await messageService.sendMessage(
       req.user!.id,
       req.params.conversationId,
-      req.body.content,
+      content || '📎',   // fallback label for attachment-only messages
       attachmentUrl
     )
 
