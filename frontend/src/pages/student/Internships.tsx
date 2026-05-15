@@ -85,6 +85,15 @@ export default function StudentInternships() {
                     {i.durationWeeks && <span className="flex items-center gap-1"><Clock size={11} />{i.durationWeeks}w</span>}
                     <span className={i.isPaid ? 'badge-green' : 'badge-gray'}>{i.isPaid ? 'Paid' : 'Unpaid'}</span>
                     {i.isRemote && <span className="badge-blue">Remote</span>}
+                    {i.slots != null && (
+                      <span className={
+                        i.slots - (i._count?.applications ?? 0) <= 0 ? 'badge-red' :
+                        i.slots - (i._count?.applications ?? 0) === 1 ? 'badge-yellow' :
+                        'badge-gray'
+                      }>
+                        {Math.max(0, i.slots - (i._count?.applications ?? 0))} spot{Math.max(0, i.slots - (i._count?.applications ?? 0)) !== 1 ? 's' : ''} left
+                      </span>
+                    )}
                   </div>
                 </div>
               ))}

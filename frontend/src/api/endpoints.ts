@@ -69,6 +69,7 @@ export const userApi = {
   updateCompanyProfile:(data: object)                           => api.put('/users/company/me', data),
   uploadLogo:          (formData: FormData)                     => api.post('/users/company/me/logo', formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
   getAllUsers:          ()                                       => api.get('/users'),
+  getAllUsersForChat:   ()                                       => api.get('/users/for-messaging'),
   toggleUserActive:    (id: string)                             => api.patch(`/users/${id}/toggle-active`),
 }
 

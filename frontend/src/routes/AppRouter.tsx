@@ -1,8 +1,26 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { Suspense, lazy } from 'react'
-import Spinner      from '@/components/common/Spinner'
-import AppLayout    from '@/components/layout/AppLayout'
+import Spinner        from '@/components/common/Spinner'
+import AppLayout      from '@/components/layout/AppLayout'
 import ProtectedRoute from './ProtectedRoute'
+import { useAuth }    from '@/context/AuthContext'
+import type { Role }  from '@/types'
+
+const dashboardByRole: Record<Role, string> = {
+  STUDENT:             '/student',
+  ACADEMIC_SUPERVISOR: '/supervisor',
+  SITE_SUPERVISOR:     '/supervisor',
+  COMPANY:             '/company',
+  ADMIN:               '/admin',
+}
+
+// Root redirect — sends logged-in users to their dashboard, others to login
+function RootRedirect() {
+  const { user, isLoading } = useAuth()
+  if (isLoading) return <div className="min-h-screen flex items-center justify-center"><Spinner size="lg" /></div>
+  if (user) return <Navigate to={dashboardByRole[user.role]} replace />
+  return <Navigate to="/auth/login" replace />
+}
 
 // ── Auth pages ────────────────────────────────────────────────
 const Login          = lazy(() => import('@/pages/auth/Login'))
@@ -57,8 +75,8 @@ export default function AppRouter() {
     <BrowserRouter>
       <Suspense fallback={<Loading />}>
         <Routes>
-          {/* Public */}
-          <Route path="/"               element={<Navigate to="/auth/login" replace />} />
+          {/* Root — smart redirect based on auth state */}
+          <Route path="/" element={<RootRedirect />} />
           <Route path="/auth/login"     element={<Login />} />
           <Route path="/auth/register"  element={<Register />} />
           <Route path="/auth/forgot"    element={<ForgotPassword />} />

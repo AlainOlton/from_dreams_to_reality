@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -5,6 +6,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/context/AuthContext'
 import toast from 'react-hot-toast'
 import { LogIn } from 'lucide-react'
+import type { Role } from '@/types'
 
 const schema = z.object({
   email:    z.string().email('Valid email required'),
@@ -12,19 +14,34 @@ const schema = z.object({
 })
 type Form = z.infer<typeof schema>
 
+const dashboardByRole: Record<Role, string> = {
+  STUDENT:             '/student',
+  ACADEMIC_SUPERVISOR: '/supervisor',
+  SITE_SUPERVISOR:     '/supervisor',
+  COMPANY:             '/company',
+  ADMIN:               '/admin',
+}
+
 export default function Login() {
-  const { login }   = useAuth()
-  const navigate    = useNavigate()
+  const { login, user, isLoading } = useAuth()
+  const navigate                   = useNavigate()
+
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<Form>({
     resolver: zodResolver(schema),
   })
+
+  // Redirect as soon as user is available (handles both fresh login and already-logged-in)
+  useEffect(() => {
+    if (!isLoading && user) {
+      navigate(dashboardByRole[user.role], { replace: true })
+    }
+  }, [user, isLoading, navigate])
 
   const onSubmit = async (data: Form) => {
     try {
       await login(data)
       toast.success('Welcome back!')
-      // AuthContext sets user; ProtectedRoute will handle redirect
-      navigate('/')
+      // useEffect above will fire once user state updates
     } catch (err: any) {
       toast.error(err?.response?.data?.message ?? 'Login failed')
     }

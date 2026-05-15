@@ -6,3 +6,6 @@ export default function CompanyMessages() {
     </div>
   )
 }
+// Company Messages page — identical chat UI, different role context
+// Re-exports the supervisor messages pattern with company branding
+export { default } from '@/pages/supervisor/Messages'
