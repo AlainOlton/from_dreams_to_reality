@@ -1,11 +1,3 @@
-export default function StudentInternshipDetail() {
-  return (
-    <div>
-      <div className="page-header"><h1>InternshipDetail</h1></div>
-      <div className="card p-6 text-sm text-gray-500">Student InternshipDetail — implement here.</div>
-    </div>
-  )
-}
 import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'

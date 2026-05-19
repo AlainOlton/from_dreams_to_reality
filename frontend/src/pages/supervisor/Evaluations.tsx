@@ -5,7 +5,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import type { Resolver } from 'react-hook-form'
-import { evaluationApi } from '@/api/endpoints'
+import { evaluationApi, enrollmentApi } from '@/api/endpoints'
 import Spinner    from '@/components/common/Spinner'
 import EmptyState from '@/components/common/EmptyState'
 import Modal      from '@/components/common/Modal'
@@ -69,6 +69,13 @@ export default function SupervisorEvaluations() {
   const [modalOpen,    setModalOpen]    = useState(false)
   const [expanded,     setExpanded]     = useState<string | null>(null)
 
+  // Load supervisor's assigned enrollments for the dropdown
+  const { data: enrollmentsData } = useQuery({
+    queryKey: ['my-enrollments'],
+    queryFn:  enrollmentApi.getMine,
+  })
+  const enrollments: any[] = enrollmentsData?.data?.data ?? []
+
   const { data, isLoading } = useQuery({
     queryKey: ['evaluations', enrollmentId],
     queryFn:  () => evaluationApi.getForEnrollment(enrollmentId),
@@ -118,22 +125,38 @@ export default function SupervisorEvaluations() {
         </button>
       </div>
 
-      {/* Enrollment ID input */}
+      {/* Enrollment selector */}
       <div className="card p-4 mb-5 flex items-center gap-4">
         <div className="flex-1">
-          <label className="label">Enrollment ID</label>
-          <input
-            value={enrollmentId}
-            onChange={(e) => setEnrollmentId(e.target.value)}
-            placeholder="Paste enrollment ID…"
-            className="input"
-          />
+          <label className="label">Select student enrollment</label>
+          {enrollments.length > 0 ? (
+            <select
+              value={enrollmentId}
+              onChange={(e) => setEnrollmentId(e.target.value)}
+              className="input"
+            >
+              <option value="">— choose a student —</option>
+              {enrollments.map((en: any) => (
+                <option key={en.id} value={en.id}>
+                  {en.student.firstName} {en.student.lastName}
+                  {en.internship ? ` · ${en.internship.title}` : ''}
+                  {en.student.studentId ? ` (${en.student.studentId})` : ''}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <input
+              value={enrollmentId}
+              onChange={(e) => setEnrollmentId(e.target.value)}
+              placeholder="Paste enrollment ID…"
+              className="input"
+            />
+          )}
         </div>
-        <p className="text-xs text-gray-400 self-end mb-2">Navigate from My Students to auto-fill.</p>
       </div>
 
       {!enrollmentId ? (
-        <EmptyState icon={<ClipboardList size={48} />} title="Select an enrollment" description="Enter an enrollment ID above or navigate from My Students." />
+        <EmptyState icon={<ClipboardList size={48} />} title="Select a student" description="Choose a student from the dropdown above to view or submit evaluations." />
       ) : isLoading ? (
         <div className="flex justify-center py-16"><Spinner size="lg" /></div>
       ) : evaluations.length === 0 ? (
@@ -232,8 +255,20 @@ export default function SupervisorEvaluations() {
         <form onSubmit={handleSubmit((d) => submitMutation.mutate(d))} className="space-y-5">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="label">Enrollment ID <span className="text-red-400">*</span></label>
-              <input {...register('enrollmentId')} className="input" placeholder="Enrollment ID…" />
+              <label className="label">Student enrollment <span className="text-red-400">*</span></label>
+              {enrollments.length > 0 ? (
+                <select {...register('enrollmentId')} className="input">
+                  <option value="">— choose a student —</option>
+                  {enrollments.map((en: any) => (
+                    <option key={en.id} value={en.id}>
+                      {en.student.firstName} {en.student.lastName}
+                      {en.internship ? ` · ${en.internship.title}` : ''}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <input {...register('enrollmentId')} className="input" placeholder="Enrollment UUID…" />
+              )}
               {errors.enrollmentId && <p className="form-error">{errors.enrollmentId.message}</p>}
             </div>
             <div>

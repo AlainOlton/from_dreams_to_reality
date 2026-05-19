@@ -88,6 +88,13 @@ export const notificationApi = {
   markAllRead:()        => api.patch('/notifications/read-all'),
 }
 
+// ── Enrollments ───────────────────────────────────────────────
+export const enrollmentApi = {
+  getMine:        () => api.get('/internships/enrollments/mine'),
+  getAll:         () => api.get('/internships/enrollments'),
+  getStudentMine: () => api.get('/internships/enrollments/student/me'),
+}
+
 // ── Reports ───────────────────────────────────────────────────
 export const reportApi = {
   myReports:          ()                                        => api.get('/reports/me'),

@@ -1,11 +1,3 @@
-export default function StudentEvaluations() {
-  return (
-    <div>
-      <div className="page-header"><h1>Evaluations</h1></div>
-      <div className="card p-6 text-sm text-gray-500">Student Evaluations — implement here.</div>
-    </div>
-  )
-}
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'

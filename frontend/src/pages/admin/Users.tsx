@@ -27,10 +27,10 @@ interface AdminUser {
 }
 
 const displayName = (u: AdminUser): string => {
+  if (u.adminProfile)      return `${u.adminProfile.firstName} ${u.adminProfile.lastName}`
   if (u.studentProfile)    return `${u.studentProfile.firstName} ${u.studentProfile.lastName}`
   if (u.supervisorProfile) return `${u.supervisorProfile.firstName} ${u.supervisorProfile.lastName}`
   if (u.companyProfile)    return u.companyProfile.companyName
-  if (u.adminProfile)      return `${u.adminProfile.firstName} ${u.adminProfile.lastName}`
   return u.email
 }
 
@@ -218,28 +218,32 @@ export default function AdminUsers() {
       <Modal
         open={!!toggleTarget}
         onClose={() => setToggleTarget(null)}
-        title={toggleTarget?.isActive ? 'Deactivate user' : 'Activate user'}
+        title={toggleTarget ? (toggleTarget.isActive ? 'Deactivate user' : 'Activate user') : ''}
         size="sm"
       >
-        <p className="text-sm text-gray-600 mb-5">
-          {toggleTarget?.isActive
-            ? `Deactivating ${displayName(toggleTarget!)} will prevent them from logging in. You can reactivate at any time.`
-            : `Activating ${displayName(toggleTarget!)} will restore their access.`
-          }
-        </p>
-        <div className="flex justify-end gap-3">
-          <button className="btn-secondary" onClick={() => setToggleTarget(null)}>Cancel</button>
-          <button
-            className={toggleTarget?.isActive ? 'btn-danger' : 'btn-primary'}
-            disabled={toggleMutation.isPending}
-            onClick={() => toggleTarget && toggleMutation.mutate(toggleTarget.id)}
-          >
-            {toggleMutation.isPending
-              ? 'Updating…'
-              : toggleTarget?.isActive ? 'Yes, deactivate' : 'Yes, activate'
-            }
-          </button>
-        </div>
+        {toggleTarget && (
+          <>
+            <p className="text-sm text-gray-600 mb-5">
+              {toggleTarget.isActive
+                ? `Deactivating ${displayName(toggleTarget)} will prevent them from logging in. You can reactivate at any time.`
+                : `Activating ${displayName(toggleTarget)} will restore their access.`
+              }
+            </p>
+            <div className="flex justify-end gap-3">
+              <button className="btn-secondary" onClick={() => setToggleTarget(null)}>Cancel</button>
+              <button
+                className={toggleTarget.isActive ? 'btn-danger' : 'btn-primary'}
+                disabled={toggleMutation.isPending}
+                onClick={() => toggleMutation.mutate(toggleTarget.id)}
+              >
+                {toggleMutation.isPending
+                  ? 'Updating…'
+                  : toggleTarget.isActive ? 'Yes, deactivate' : 'Yes, activate'
+                }
+              </button>
+            </div>
+          </>
+        )}
       </Modal>
     </div>
   )
