@@ -124,10 +124,11 @@ export default function SupervisorLogbooks() {
               {expanded === entry.id && (
                 <div className="border-t border-gray-100 p-5 bg-gray-50 space-y-4">
                   {[
-                    { label: 'Activities done', value: entry.activitiesDone },
-                    { label: 'Skills gained',   value: entry.skillsGained  },
-                    { label: 'Challenges',       value: entry.challenges    },
-                    { label: 'Next week plan',   value: entry.nextWeekPlan  },
+                    { label: 'Internship site',  value: entry.internshipSite  },
+                    { label: 'Activities done',  value: entry.activitiesDone  },
+                    { label: 'Skills gained',    value: entry.skillsGained    },
+                    { label: 'Challenges',       value: entry.challenges      },
+                    { label: 'Next week plan',   value: entry.nextWeekPlan    },
                   ].filter(s => s.value).map((s) => (
                     <div key={s.label}>
                       <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">{s.label}</p>
@@ -142,10 +143,24 @@ export default function SupervisorLogbooks() {
                     </div>
                   )}
 
+                  {(entry as any).absenceReason && (
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                      <p className="text-xs font-semibold text-red-600 mb-1">Absence reason</p>
+                      <p className="text-sm text-red-800">{(entry as any).absenceReason}</p>
+                    </div>
+                  )}
+
                   {entry.attachmentUrl && (
                     <a href={entry.attachmentUrl} target="_blank" rel="noreferrer"
                       className="flex items-center gap-2 text-xs text-brand-600 hover:underline">
                       <Paperclip size={13} /> View attachment
+                    </a>
+                  )}
+
+                  {(entry as any).finalReportUrl && (
+                    <a href={(entry as any).finalReportUrl} target="_blank" rel="noreferrer"
+                      className="flex items-center gap-2 text-xs text-green-600 hover:underline font-medium">
+                      <Paperclip size={13} /> View final internship report
                     </a>
                   )}
 

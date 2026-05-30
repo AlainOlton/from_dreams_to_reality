@@ -6,6 +6,7 @@ export const getRoleLabel = (role: Role): string => ({
   SITE_SUPERVISOR:     'Site Supervisor',
   COMPANY:             'Company',
   ADMIN:               'Admin',
+  UNIVERSITY:          'University',
 }[role] ?? role)
 
 export const getRoleBadgeClass = (role: Role): string => ({
@@ -14,6 +15,7 @@ export const getRoleBadgeClass = (role: Role): string => ({
   SITE_SUPERVISOR:     'badge-yellow',
   COMPANY:             'badge-green',
   ADMIN:               'badge-red',
+  UNIVERSITY:          'badge-blue',
 }[role] ?? 'badge-gray')
 
 export const getStatusBadgeClass = (status: ApplicationStatus): string => ({

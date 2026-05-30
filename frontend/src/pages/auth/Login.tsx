@@ -20,6 +20,7 @@ const dashboardByRole: Record<Role, string> = {
   SITE_SUPERVISOR:     '/supervisor',
   COMPANY:             '/company',
   ADMIN:               '/admin',
+  UNIVERSITY:          '/university',
 }
 
 export default function Login() {

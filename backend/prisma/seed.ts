@@ -18,7 +18,7 @@ async function main() {
   // ADMIN
   const adminUser = await prisma.user.upsert({
     where: { email: "admin@ims.dev" },
-    update: {},
+    update: { password: HASH },
     create: {
       email: "admin@ims.dev",
       password: HASH,
@@ -37,7 +37,7 @@ async function main() {
   // STUDENT
   const studentUser = await prisma.user.upsert({
     where: { email: "student@ims.dev" },
-    update: {},
+    update: { password: HASH },
     create: {
       email: "student@ims.dev",
       password: HASH,
@@ -59,7 +59,7 @@ async function main() {
   // ACADEMIC SUPERVISOR
   const academicUser = await prisma.user.upsert({
     where: { email: "academic@ims.dev" },
-    update: {},
+    update: { password: HASH },
     create: {
       email: "academic@ims.dev",
       password: HASH,
@@ -79,7 +79,7 @@ async function main() {
   // SITE SUPERVISOR
   const siteUser = await prisma.user.upsert({
     where: { email: "site@ims.dev" },
-    update: {},
+    update: { password: HASH },
     create: {
       email: "site@ims.dev",
       password: HASH,
@@ -87,18 +87,50 @@ async function main() {
       isEmailVerified: true,
       supervisorProfile: {
         create: {
-          firstName: "Eric",
-          lastName: "Nkurunziza",
+          firstName: "Placidie",
+          lastName: "Mwizerwa",
         },
       },
     },
     include: { supervisorProfile: true },
   });
 
+  // UNIVERSITY
+  const universityUser = await prisma.user.upsert({
+    where: { email: 'university@ims.dev' },
+    update: { password: HASH },
+    create: {
+      email: 'university@ims.dev',
+      password: HASH,
+      // @ts-ignore — Role enum updated after prisma generate; IDE cache may be stale
+      role: Role.UNIVERSITY,
+      isEmailVerified: true,
+      // @ts-ignore
+      universityProfile: {
+        create: {
+          universityName:    'University of Rwanda',
+          country:           'Rwanda',
+          city:              'Kigali',
+          website:           'https://ur.ac.rw',
+          phone:             '+250788000001',
+          email:             'internships@ur.ac.rw',
+          contactPersonName: 'Dr. Marie Uwimana',
+          isVerified:        true,
+        },
+      },
+    },
+    // @ts-ignore
+    include: { universityProfile: true },
+  })
+
+  // UNIVERSITY
+  // @ts-ignore — Role enum updated after prisma generate; IDE cache may be stale
+  void universityUser
+
   // COMPANY 1
   const company1User = await prisma.user.upsert({
     where: { email: "company1@ims.dev" },
-    update: {},
+    update: { password: HASH },
     create: {
       email: "company1@ims.dev",
       password: HASH,
@@ -119,7 +151,7 @@ async function main() {
   // COMPANY 2
   const company2User = await prisma.user.upsert({
     where: { email: "company2@ims.dev" },
-    update: {},
+    update: { password: HASH },
     create: {
       email: "company2@ims.dev",
       password: HASH,
@@ -138,6 +170,32 @@ async function main() {
   });
 
   const studentProfile = studentUser.studentProfile!;
+
+  // STUDENT 2 — also from University of Rwanda so university dashboard has data
+  const student2User = await prisma.user.upsert({
+    where: { email: 'student2@ims.dev' },
+    update: { password: HASH },
+    create: {
+      email: 'student2@ims.dev',
+      password: HASH,
+      role: Role.STUDENT,
+      isEmailVerified: true,
+      studentProfile: {
+        create: {
+          firstName:   'Bob',
+          lastName:    'Nkurunziza',
+          studentId:   'STU-002',
+          department:  'Information Technology',
+          faculty:     'Science & Technology',
+          yearOfStudy: 3,
+          institution: 'University of Rwanda',
+          skills:      ['Python', 'Django', 'SQL'],
+        },
+      },
+    },
+    include: { studentProfile: true },
+  });
+  void student2User // suppress unused warning
   const academicProfile = academicUser.supervisorProfile!;
   const siteProfile = siteUser.supervisorProfile!;
   const company1Profile = company1User.companyProfile!;
@@ -287,8 +345,10 @@ async function main() {
     },
   });
 
+  void internship4; void internship6 // DRAFT listings — created but not used in relations
+
   // ──────────────────────────────────────────────
-  // APPLICATIONS (student → some internships)
+  // APPLICATIONS
   // ──────────────────────────────────────────────
 
   const application1 = await prisma.application.create({
@@ -301,6 +361,7 @@ async function main() {
       reviewedAt: new Date("2025-05-15"),
     },
   });
+  void application1 // accepted application — used for context, no further relations needed
 
   await prisma.application.create({
     data: {
@@ -408,8 +469,10 @@ async function main() {
   // ATTENDANCE RECORDS (2 records)
   // ──────────────────────────────────────────────
 
-  await prisma.attendanceRecord.create({
-    data: {
+  await prisma.attendanceRecord.upsert({
+    where: { studentId_date: { studentId: studentProfile.id, date: new Date("2025-07-07") } },
+    update: {},
+    create: {
       studentId: studentProfile.id,
       enrollmentId: enrollment.id,
       date: new Date("2025-07-07"),
@@ -420,8 +483,10 @@ async function main() {
     },
   });
 
-  await prisma.attendanceRecord.create({
-    data: {
+  await prisma.attendanceRecord.upsert({
+    where: { studentId_date: { studentId: studentProfile.id, date: new Date("2025-07-08") } },
+    update: {},
+    create: {
       studentId: studentProfile.id,
       enrollmentId: enrollment.id,
       date: new Date("2025-07-08"),

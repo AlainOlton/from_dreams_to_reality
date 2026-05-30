@@ -26,6 +26,7 @@ export default function ProtectedRoute({ allowedRoles }: Props) {
       SITE_SUPERVISOR:     '/supervisor',
       COMPANY:             '/company',
       ADMIN:               '/admin',
+      UNIVERSITY:          '/university',
     }
     return <Navigate to={dashboard[user.role]} replace />
   }

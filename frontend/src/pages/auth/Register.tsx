@@ -11,6 +11,7 @@ const ROLES: { value: Role; label: string }[] = [
   { value: 'ACADEMIC_SUPERVISOR', label: 'Academic Supervisor' },
   { value: 'SITE_SUPERVISOR',     label: 'Site Supervisor' },
   { value: 'COMPANY',             label: 'Company / Employer' },
+  { value: 'UNIVERSITY',          label: 'University / Institution' },
 ]
 
 const schema = z.object({
@@ -18,7 +19,7 @@ const schema = z.object({
   lastName:  z.string().min(1, 'Required'),
   email:     z.string().email('Valid email required'),
   password:  z.string().min(8, 'Min 8 characters').regex(/[A-Z]/, 'Needs uppercase').regex(/[0-9]/, 'Needs number'),
-  role:      z.enum(['STUDENT','ACADEMIC_SUPERVISOR','SITE_SUPERVISOR','COMPANY','ADMIN'] as const),
+  role:      z.enum(['STUDENT','ACADEMIC_SUPERVISOR','SITE_SUPERVISOR','COMPANY','ADMIN','UNIVERSITY'] as const),
 })
 type Form = z.infer<typeof schema>
 

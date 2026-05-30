@@ -108,6 +108,26 @@ router.post('/company/me/logo', protect, authorize(Role.COMPANY),
   }
 )
 
+// ── University profile ───────────────────────────────────────
+router.get('/university/me', protect, authorize(Role.UNIVERSITY), async (req, res, next) => {
+  try {
+    const profile = await prisma.universityProfile.findUnique({ where: { userId: req.user!.id } })
+    sendSuccess(res, profile)
+  } catch (err) { next(err) }
+})
+
+router.put('/university/me', protect, authorize(Role.UNIVERSITY),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const profile = await prisma.universityProfile.update({
+        where: { userId: req.user!.id },
+        data:  req.body,
+      })
+      sendSuccess(res, profile, 'University profile updated')
+    } catch (err) { next(err) }
+  }
+)
+
 // ── All authenticated users — minimal list for messaging ─────
 // Returns only id, role, and name fields — safe for all roles
 router.get('/for-messaging', protect, async (req: Request, res: Response, next: NextFunction) => {
@@ -120,6 +140,7 @@ router.get('/for-messaging', protect, async (req: Request, res: Response, next: 
         supervisorProfile: { select: { firstName: true, lastName: true, profilePhotoUrl: true } },
         companyProfile:    { select: { companyName: true, logoUrl: true } },
         adminProfile:      { select: { firstName: true, lastName: true } },
+        universityProfile: { select: { universityName: true, logoUrl: true } },
       },
       orderBy: { createdAt: 'asc' },
     })
@@ -137,6 +158,8 @@ router.get('/', protect, authorize(Role.ADMIN), async (req: Request, res: Respon
         studentProfile:    { select: { firstName: true, lastName: true } },
         supervisorProfile: { select: { firstName: true, lastName: true } },
         companyProfile:    { select: { companyName: true } },
+        adminProfile:      { select: { firstName: true, lastName: true } },
+        universityProfile: { select: { universityName: true } },
       },
       orderBy: { createdAt: 'desc' },
     })

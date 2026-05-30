@@ -54,3 +54,24 @@ export const logAttendance = async (req: Request, res: Response, next: NextFunct
     sendSuccess(res, result, 'Attendance logged')
   } catch (err) { next(err) }
 }
+
+/** POST /logbook/final-report — student uploads end-of-internship PDF report */
+export const uploadFinalReport = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const fileUrl = (req.file as any)?.path
+    if (!fileUrl) {
+      res.status(400).json({ success: false, message: 'No file uploaded. Please attach a PDF.' })
+      return
+    }
+    const result = await logbookService.uploadFinalReport(req.user!.id, fileUrl)
+    sendSuccess(res, result, 'Final report uploaded successfully')
+  } catch (err) { next(err) }
+}
+
+/** POST /logbook/process-missed — trigger missed-logbook check (admin / cron) */
+export const processMissedLogbooks = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    await logbookService.processMissedLogbooks()
+    sendSuccess(res, null, 'Missed logbook check completed')
+  } catch (err) { next(err) }
+}

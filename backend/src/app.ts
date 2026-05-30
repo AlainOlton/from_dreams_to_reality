@@ -18,6 +18,7 @@ import evaluationRoutes   from '@/routers/evaluation.routes'
 import reportRoutes       from '@/routers/report.routes'
 import messageRoutes      from '@/routers/message.routes'
 import notificationRoutes from '@/routers/notification.routes'
+import universityRoutes   from '@/routers/university.routes'
 import { errorHandler }   from '@/middleware/error.middleware'
 import { RegisterRoutes } from '@/docs/routes'
 import swaggerDocument    from '@/docs/swagger.json'
@@ -45,10 +46,14 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 app.use(cookieParser())
 
 // ── Rate limiting ────────────────────────────────────────────
+// Skip rate limiting in development — only enforce in production
+const isDev = process.env.NODE_ENV !== 'production'
+
 // Tighter limit on auth endpoints to prevent brute force
 app.use('/api/auth', rateLimit({
   windowMs: 15 * 60 * 1000,   // 15 minutes
-  max:      20,
+  max:      isDev ? 1000 : 20,
+  skip:     () => isDev,
   message:  { success: false, message: 'Too many auth attempts, please try again later' },
   standardHeaders: true,
   legacyHeaders:   false,
@@ -57,7 +62,8 @@ app.use('/api/auth', rateLimit({
 // General API limit
 app.use('/api', rateLimit({
   windowMs: 15 * 60 * 1000,
-  max:      300,
+  max:      isDev ? 10000 : 500,
+  skip:     () => isDev,
   message:  { success: false, message: 'Too many requests, please slow down' },
   standardHeaders: true,
   legacyHeaders:   false,
@@ -98,6 +104,7 @@ app.use('/api/evaluations',            evaluationRoutes)
 app.use('/api/reports',                reportRoutes)
 app.use('/api/messages',               messageRoutes)
 app.use('/api/notifications',          notificationRoutes)
+app.use('/api/university',             universityRoutes)
 
 // ── tsoa generated routes (docs only — must come AFTER real routes) ──
 RegisterRoutes(app)

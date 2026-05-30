@@ -147,23 +147,48 @@ export const validateLogbookEntry = [
   body('frequency')
     .isIn(Object.values(LogbookFrequency)).withMessage('Frequency must be DAILY or WEEKLY'),
   body('entryDate')
-    .isISO8601().withMessage('Entry date must be a valid ISO date'),
+    .isISO8601().withMessage('Entry date must be a valid ISO date')
+    .custom((val: string) => {
+      // Strip time — compare date-only in UTC
+      const entry = new Date(val)
+      const entryDay = new Date(Date.UTC(entry.getUTCFullYear(), entry.getUTCMonth(), entry.getUTCDate()))
+      const now      = new Date()
+      const today    = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()))
+      if (entryDay < today) {
+        throw new Error(
+          'You cannot submit a logbook entry for a past date. ' +
+          'Entries must be submitted on the same day they occurred.'
+        )
+      }
+      return true
+    }),
+  body('internshipSite')
+    .trim()
+    .notEmpty().withMessage('Internship site / location is required')
+    .isLength({ max: 200 }).withMessage('Site name must be 200 characters or fewer'),
   body('activitiesDone')
     .trim()
     .notEmpty().withMessage('Activities done is required')
-    .isLength({ min: 20 }).withMessage('Please describe activities in at least 20 characters'),
+    .isLength({ min: 20 }).withMessage('Please describe activities in at least 20 characters')
+    .isLength({ max: 3000 }).withMessage('Activities must be 3000 characters or fewer'),
+  body('skillsGained')
+    .trim()
+    .notEmpty().withMessage('Skills gained is required')
+    .isLength({ max: 1000 }).withMessage('Skills gained must be 1000 characters or fewer'),
+  body('challenges')
+    .trim()
+    .notEmpty().withMessage('Challenges is required')
+    .isLength({ max: 1000 }).withMessage('Challenges must be 1000 characters or fewer'),
+  body('nextWeekPlan')
+    .trim()
+    .notEmpty().withMessage('Next week plan is required')
+    .isLength({ max: 1000 }).withMessage('Next week plan must be 1000 characters or fewer'),
   body('weekNumber')
     .optional()
     .isInt({ min: 1, max: 52 }).withMessage('Week number must be between 1 and 52'),
-  body('skillsGained')
+  body('absenceReason')
     .optional()
-    .isLength({ max: 1000 }).withMessage('Skills gained must be 1000 characters or fewer'),
-  body('challenges')
-    .optional()
-    .isLength({ max: 1000 }).withMessage('Challenges must be 1000 characters or fewer'),
-  body('nextWeekPlan')
-    .optional()
-    .isLength({ max: 1000 }).withMessage('Next week plan must be 1000 characters or fewer'),
+    .isLength({ max: 1000 }).withMessage('Absence reason must be 1000 characters or fewer'),
 ]
 
 export const validateAttendance = [

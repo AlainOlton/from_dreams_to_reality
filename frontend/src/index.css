@@ -73,4 +73,20 @@
   .badge-purple  { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800; }
   .form-error    { @apply text-xs text-red-500 mt-1; }
   .page-header   { @apply flex items-center justify-between mb-6; }
+
+  /* ── Sidebar nav items ───────────────────────────────────── */
+  /* Bootstrap secondary (#6c757d) background, info (#0dcaf0) for active/hover */
+  .nav-inactive {
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .nav-inactive:hover {
+    background-color: #0dcaf0;
+    color: #000;
+  }
+  .nav-active {
+    background-color: #0dcaf0;
+    color: #000;
+    font-weight: 600;
+  }
+  .section-title { @apply text-sm font-semibold text-gray-700 mb-3; }
 }

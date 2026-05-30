@@ -43,6 +43,10 @@ export const registerUser = async (body: RegisterBody) => {
     await prisma.adminProfile.create({
       data: { userId: user.id, firstName, lastName },
     })
+  } else if (role === Role.UNIVERSITY) {
+    await prisma.universityProfile.create({
+      data: { userId: user.id, universityName: firstName, contactPersonName: `${firstName} ${lastName}` },
+    })
   }
 
   // Only send if email credentials are configured
@@ -135,6 +139,7 @@ export const getMe = async (userId: string) => {
       supervisorProfile: { select: { firstName: true, lastName: true, profilePhotoUrl: true } },
       companyProfile:  { select: { companyName: true, logoUrl: true } },
       adminProfile:    { select: { firstName: true, lastName: true } },
+      universityProfile: { select: { universityName: true, logoUrl: true, contactPersonName: true } },
     },
   })
   if (!user) throw Object.assign(new Error('User not found'), { statusCode: 404 })

@@ -39,13 +39,14 @@ export const applicationApi = {
 
 // ── Logbook ───────────────────────────────────────────────────
 export const logbookApi = {
-  createEntry:    (formData: FormData)                          => api.post('/logbook', formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
-  getMyEntries:   (params?: Record<string, string>)             => api.get<{ data: PaginatedResult<LogbookEntry> }>('/logbook/me', { params }),
-  updateEntry:    (id: string, data: Partial<LogbookEntry>)     => api.put(`/logbook/${id}`, data),
-  approveEntry:   (id: string, note?: string)                   => api.patch(`/logbook/${id}/approve`, { note }),
+  createEntry:      (formData: FormData)                          => api.post('/logbook', formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
+  getMyEntries:     (params?: Record<string, string>)             => api.get<{ data: PaginatedResult<LogbookEntry> }>('/logbook/me', { params }),
+  updateEntry:      (id: string, data: Partial<LogbookEntry>)     => api.put(`/logbook/${id}`, data),
+  approveEntry:     (id: string, note?: string)                   => api.patch(`/logbook/${id}/approve`, { note }),
   getStudentEntries:(studentId: string, params?: Record<string,string>) => api.get(`/logbook/student/${studentId}`, { params }),
-  getAttendance:  ()                                            => api.get('/logbook/attendance/me'),
-  logAttendance:  (data: object)                                => api.post('/logbook/attendance', data),
+  getAttendance:    ()                                            => api.get('/logbook/attendance/me'),
+  logAttendance:    (data: object)                                => api.post('/logbook/attendance', data),
+  uploadFinalReport:(formData: FormData)                          => api.post('/logbook/final-report', formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
 }
 
 // ── Evaluations ───────────────────────────────────────────────
@@ -86,6 +87,17 @@ export const notificationApi = {
   getAll:    ()         => api.get('/notifications'),
   markRead:  (id: string) => api.patch(`/notifications/${id}/read`),
   markAllRead:()        => api.patch('/notifications/read-all'),
+}
+
+// ── University ────────────────────────────────────────────────
+export const universityApi = {
+  getDashboard:  () => api.get('/university/dashboard'),
+  getStudents:   () => api.get('/university/students'),
+  getSupervisors:() => api.get('/university/supervisors'),
+  getEvaluations:() => api.get('/university/evaluations'),
+  getReports:    () => api.get('/university/reports'),
+  getProfile:    () => api.get('/users/university/me'),
+  updateProfile: (data: object) => api.put('/users/university/me', data),
 }
 
 // ── Enrollments ───────────────────────────────────────────────

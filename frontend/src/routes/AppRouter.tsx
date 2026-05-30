@@ -12,17 +12,19 @@ const dashboardByRole: Record<Role, string> = {
   SITE_SUPERVISOR:     '/supervisor',
   COMPANY:             '/company',
   ADMIN:               '/admin',
+  UNIVERSITY:          '/university',
 }
 
-// Root redirect — sends logged-in users to their dashboard, others to login
+// Root redirect — sends logged-in users to their dashboard, others to landing page
 function RootRedirect() {
   const { user, isLoading } = useAuth()
   if (isLoading) return <div className="min-h-screen flex items-center justify-center"><Spinner size="lg" /></div>
   if (user) return <Navigate to={dashboardByRole[user.role]} replace />
-  return <Navigate to="/auth/login" replace />
+  return <Navigate to="/landing" replace />
 }
 
 // ── Auth pages ────────────────────────────────────────────────
+const Landing        = lazy(() => import('@/pages/Landing'))
 const Login          = lazy(() => import('@/pages/auth/Login'))
 const Register       = lazy(() => import('@/pages/auth/Register'))
 const ForgotPassword = lazy(() => import('@/pages/auth/ForgotPassword'))
@@ -64,6 +66,14 @@ const AdminEnrollments = lazy(() => import('@/pages/admin/Enrollments'))
 const AdminReports     = lazy(() => import('@/pages/admin/Reports'))
 const AdminSettings    = lazy(() => import('@/pages/admin/Settings'))
 
+// ── University pages ──────────────────────────────────────────
+const UniversityDashboard   = lazy(() => import('@/pages/university/Dashboard'))
+const UniversityStudents    = lazy(() => import('@/pages/university/Students'))
+const UniversitySupervisors = lazy(() => import('@/pages/university/Supervisors'))
+const UniversityEvaluations = lazy(() => import('@/pages/university/Evaluations'))
+const UniversityMessages    = lazy(() => import('@/pages/university/Messages'))
+const UniversityReports     = lazy(() => import('@/pages/university/Reports'))
+
 const Loading = () => (
   <div className="flex items-center justify-center h-64">
     <Spinner size="lg" />
@@ -76,7 +86,8 @@ export default function AppRouter() {
       <Suspense fallback={<Loading />}>
         <Routes>
           {/* Root — smart redirect based on auth state */}
-          <Route path="/" element={<RootRedirect />} />
+          <Route path="/"        element={<RootRedirect />} />
+          <Route path="/landing" element={<Landing />} />
           <Route path="/auth/login"     element={<Login />} />
           <Route path="/auth/register"  element={<Register />} />
           <Route path="/auth/forgot"    element={<ForgotPassword />} />
@@ -134,7 +145,19 @@ export default function AppRouter() {
             </Route>
           </Route>
 
-          <Route path="*" element={<Navigate to="/auth/login" replace />} />
+          {/* University */}
+          <Route element={<ProtectedRoute allowedRoles={['UNIVERSITY']} />}>
+            <Route element={<AppLayout />}>
+              <Route path="/university"                    element={<UniversityDashboard />} />
+              <Route path="/university/students"           element={<UniversityStudents />} />
+              <Route path="/university/supervisors"        element={<UniversitySupervisors />} />
+              <Route path="/university/evaluations"        element={<UniversityEvaluations />} />
+              <Route path="/university/messages"           element={<UniversityMessages />} />
+              <Route path="/university/reports"            element={<UniversityReports />} />
+            </Route>
+          </Route>
+
+          <Route path="*" element={<Navigate to="/landing" replace />} />
         </Routes>
       </Suspense>
     </BrowserRouter>

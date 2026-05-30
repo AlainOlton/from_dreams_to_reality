@@ -3,7 +3,7 @@ import * as logbook       from '@/controllers/logbook.controller'
 import { protect }        from '@/middleware/auth.middleware'
 import { authorize }      from '@/middleware/rbac.middleware'
 import { validate }       from '@/middleware/validate.middleware'
-import { uploadAttachment } from '@/middleware/upload.middleware'
+import { uploadAttachment, uploadDocument } from '@/middleware/upload.middleware'
 import {
   validateLogbookEntry,
   validateAttendance,
@@ -13,7 +13,8 @@ import { Role } from '@prisma/client'
 
 const router = Router()
 
-// Student
+// ── Student routes ────────────────────────────────────────────
+
 router.get('/me',
   protect, authorize(Role.STUDENT),
   logbook.getMyEntries)
@@ -33,7 +34,18 @@ router.get('/attendance/me',
   protect, authorize(Role.STUDENT),
   logbook.getAttendanceSummary)
 
-// Supervisors / Admin
+/**
+ * POST /logbook/final-report
+ * Student uploads end-of-internship PDF report (+ signed supervisor docs).
+ * Accepts a single PDF file in the `finalReport` field.
+ */
+router.post('/final-report',
+  protect, authorize(Role.STUDENT),
+  uploadDocument.single('finalReport'),
+  logbook.uploadFinalReport)
+
+// ── Supervisor / Admin routes ─────────────────────────────────
+
 router.get('/student/:studentId',
   protect, authorize(Role.ACADEMIC_SUPERVISOR, Role.SITE_SUPERVISOR, Role.ADMIN),
   validateUuidParam('studentId'), validate,
@@ -48,5 +60,14 @@ router.post('/attendance',
   protect, authorize(Role.SITE_SUPERVISOR, Role.ADMIN),
   validateAttendance, validate,
   logbook.logAttendance)
+
+/**
+ * POST /logbook/process-missed
+ * Trigger the missed-logbook check manually (Admin only).
+ * In production this would be called by a daily cron job.
+ */
+router.post('/process-missed',
+  protect, authorize(Role.ADMIN),
+  logbook.processMissedLogbooks)
 
 export default router

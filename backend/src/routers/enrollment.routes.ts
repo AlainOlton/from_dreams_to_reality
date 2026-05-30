@@ -69,8 +69,6 @@ router.get('/mine',
         orderBy: { createdAt: 'desc' },
         include: {
           ...enrollmentInclude,
-          // Extra counts for supervisor dashboard badges
-          _count: false,
         },
       })
 

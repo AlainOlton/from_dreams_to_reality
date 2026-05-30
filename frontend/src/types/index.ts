@@ -6,6 +6,7 @@ export type Role =
   | 'SITE_SUPERVISOR'
   | 'COMPANY'
   | 'ADMIN'
+  | 'UNIVERSITY'
 
 export type InternshipType   = 'ACADEMIC' | 'PROFESSIONAL'
 export type InternshipStatus = 'DRAFT' | 'OPEN' | 'CLOSED' | 'FILLED'
@@ -35,6 +36,7 @@ export interface AuthUser {
   supervisorProfile?: { firstName: string; lastName: string; profilePhotoUrl: string | null }
   companyProfile?:    { companyName: string; logoUrl: string | null }
   adminProfile?:      { firstName: string; lastName: string }
+  universityProfile?: { universityName: string; logoUrl: string | null; contactPersonName?: string | null }
 }
 
 export interface LoginPayload    { email: string; password: string }
@@ -176,14 +178,17 @@ export interface LogbookEntry {
   frequency:       LogbookFrequency
   entryDate:       string
   weekNumber?:     number
+  internshipSite:  string
   activitiesDone:  string
-  skillsGained?:   string
-  challenges?:     string
-  nextWeekPlan?:   string
+  skillsGained:    string
+  challenges:      string
+  nextWeekPlan:    string
+  absenceReason?:  string
   supervisorNote?: string
   isApproved:      boolean
   approvedAt?:     string
   attachmentUrl?:  string
+  finalReportUrl?: string
   createdAt:       string
 }
 

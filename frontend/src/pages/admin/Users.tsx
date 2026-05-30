@@ -24,6 +24,7 @@ interface AdminUser {
   supervisorProfile?: { firstName: string; lastName: string } | null
   companyProfile?:    { companyName: string }                 | null
   adminProfile?:      { firstName: string; lastName: string } | null
+  universityProfile?: { universityName: string }              | null
 }
 
 const displayName = (u: AdminUser): string => {
@@ -31,6 +32,7 @@ const displayName = (u: AdminUser): string => {
   if (u.studentProfile)    return `${u.studentProfile.firstName} ${u.studentProfile.lastName}`
   if (u.supervisorProfile) return `${u.supervisorProfile.firstName} ${u.supervisorProfile.lastName}`
   if (u.companyProfile)    return u.companyProfile.companyName
+  if (u.universityProfile) return u.universityProfile.universityName
   return u.email
 }
 
