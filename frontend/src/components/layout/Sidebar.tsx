@@ -88,7 +88,7 @@ export default function Sidebar() {
 
   return (
     <aside
-      style={{ backgroundColor: '#6c757d' }}
+      style={{ backgroundColor: 'var(--color-primary-dark)' }}
       className={`
         fixed top-0 left-0 h-screen z-40
         flex flex-col transition-all duration-200
@@ -102,7 +102,7 @@ export default function Sidebar() {
       >
         {sidebarOpen && (
           <span className="font-bold text-white text-sm leading-tight drop-shadow-sm">
-            Internship<br />System
+            Internship<br />Monitoring System
           </span>
         )}
         <button
@@ -122,7 +122,7 @@ export default function Sidebar() {
             end={item.to.split('/').length <= 2}
             className={({ isActive }) => `
               flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium
-              transition-colors group nav-item
+              transition-colors group
               ${isActive ? 'nav-active' : 'nav-inactive'}
               ${sidebarOpen ? '' : 'justify-center'}
             `}

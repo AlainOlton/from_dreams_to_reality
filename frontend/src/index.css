@@ -1,33 +1,45 @@
 @import "tailwindcss";
 
 @theme {
-  /* Brand colors */
-  --color-primary:           #1D9E75;
-  --color-primary-light:     #E1F5EE;
-  --color-primary-dark:      #085041;
-  --color-secondary:         #534AB7;
-  --color-secondary-light:   #EEEDFE;
-  --color-secondary-dark:    #3C3489;
-  --color-accent:            #D85A30;
-  --color-accent-light:      #FAEEDA;
-  --color-accent-dark:       #633806;
+  --color-primary:           #0d6efd;
+  --color-primary-light:     #cfe2ff;
+  --color-primary-dark:      #0a58ca;
 
-  /* Neutral palette */
-  --color-neutral-50:        #F8FAFC;
-  --color-neutral-100:       #F1F5F9;
-  --color-neutral-200:       #E2E8F0;
-  --color-neutral-700:       #334155;
-  --color-neutral-900:       #0F172A;
+  --color-secondary:         #6c757d;
+  --color-secondary-light:   #f8f9fa;
+  --color-secondary-dark:    #495057;
 
-  /* Typography */
+  --color-success:           #198754;
+  --color-success-light:     #d1e7dd;
+  --color-success-dark:      #0f5132;
+
+  --color-danger:            #dc3545;
+  --color-danger-light:      #f8d7da;
+  --color-danger-dark:       #842029;
+
+  --color-warning:           #ffc107;
+  --color-warning-light:     #fff3cd;
+  --color-warning-dark:      #664d03;
+
+  --color-info:              #0dcaf0;
+  --color-info-light:        #cff4fc;
+  --color-info-dark:         #055160;
+
+  --color-light:             #f8f9fa;
+  --color-dark:              #212529;
+
+  --color-neutral-50:        #f8f9fa;
+  --color-neutral-100:       #e9ecef;
+  --color-neutral-200:       #dee2e6;
+  --color-neutral-700:       #495057;
+  --color-neutral-900:       #212529;
+
   --font-sans: 'Inter', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  /* Border radius */
   --radius-xl:  1rem;
   --radius-2xl: 1.5rem;
 
-  /* Shadows */
   --shadow-card:  0 1px 3px 0 rgb(0 0 0 / .07), 0 1px 2px -1px rgb(0 0 0 / .07);
   --shadow-float: 0 10px 25px -3px rgb(0 0 0 / .1);
 }
@@ -38,55 +50,115 @@
 }
 
 @layer components {
-  .btn-primary {
-    @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-colors;
-    @apply disabled:opacity-50 disabled:cursor-not-allowed;
-    background-color: var(--color-primary);
-    color: #fff;
-    &:hover { background-color: var(--color-primary-dark); }
-  }
 
-  .btn-secondary {
-    @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 font-medium text-sm transition-colors;
-    @apply hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed;
+  /* Buttons */
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed;
+    background-color: var(--color-primary);
   }
+  .btn-primary:hover { background-color: var(--color-primary-dark); }
+
+  .btn-info {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed;
+    background-color: var(--color-info);
+    color: var(--color-dark);
+  }
+  .btn-info:hover { filter: brightness(0.92); }
+
+  .btn-success {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed;
+    background-color: var(--color-success);
+  }
+  .btn-success:hover { background-color: var(--color-success-dark); }
+
+  .btn-warning {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed;
+    background-color: var(--color-warning);
+    color: var(--color-dark);
+  }
+  .btn-warning:hover { filter: brightness(0.92); }
 
   .btn-danger {
-    @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-red-500 text-white font-medium text-sm transition-colors;
-    @apply hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed;
+    background-color: var(--color-danger);
+  }
+  .btn-danger:hover { background-color: var(--color-danger-dark); }
+
+  .btn-secondary {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed;
+    background-color: var(--color-secondary);
+  }
+  .btn-secondary:hover { background-color: var(--color-secondary-dark); }
+
+  .btn-outline {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 font-medium text-sm transition-all hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
+  .btn-outline-primary {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed;
+    border: 1px solid var(--color-primary);
+    color: var(--color-primary);
+    background: transparent;
+  }
+  .btn-outline-primary:hover { background-color: var(--color-primary); color: #fff; }
+
+  .btn-outline-info {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed;
+    border: 1px solid var(--color-info);
+    color: var(--color-info-dark);
+    background: transparent;
+  }
+  .btn-outline-info:hover { background-color: var(--color-info); color: var(--color-dark); }
+
+  /* Form */
   .input {
-    @apply w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm placeholder-gray-400;
-    @apply focus:outline-none focus:ring-2 focus:border-transparent disabled:bg-gray-100;
+    @apply w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent disabled:bg-gray-100;
     --tw-ring-color: var(--color-primary);
   }
+  .label      { @apply block text-sm font-medium text-gray-700 mb-1; }
+  .form-error { @apply text-xs text-red-500 mt-1; }
 
-  .label         { @apply block text-sm font-medium text-gray-700 mb-1; }
+  /* Layout */
   .card          { @apply bg-white rounded-xl border border-gray-200 shadow-sm; }
-  .badge         { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium; }
-  .badge-green   { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800; }
-  .badge-blue    { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800; }
-  .badge-yellow  { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800; }
-  .badge-red     { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800; }
-  .badge-gray    { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700; }
-  .badge-purple  { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800; }
-  .form-error    { @apply text-xs text-red-500 mt-1; }
   .page-header   { @apply flex items-center justify-between mb-6; }
-
-  /* ── Sidebar nav items ───────────────────────────────────── */
-  /* Bootstrap secondary (#6c757d) background, info (#0dcaf0) for active/hover */
-  .nav-inactive {
-    color: rgba(255, 255, 255, 0.85);
-  }
-  .nav-inactive:hover {
-    background-color: #0dcaf0;
-    color: #000;
-  }
-  .nav-active {
-    background-color: #0dcaf0;
-    color: #000;
-    font-weight: 600;
-  }
   .section-title { @apply text-sm font-semibold text-gray-700 mb-3; }
+
+  /* Badges */
+  .badge           { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium; }
+  .badge-primary   { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800; }
+  .badge-info      { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-cyan-100 text-cyan-800; }
+  .badge-success   { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800; }
+  .badge-warning   { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800; }
+  .badge-danger    { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800; }
+  .badge-secondary { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700; }
+  .badge-dark      { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-800 text-white; }
+  .badge-purple    { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800; }
+  /* legacy aliases */
+  .badge-green  { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800; }
+  .badge-blue   { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800; }
+  .badge-yellow { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800; }
+  .badge-red    { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800; }
+  .badge-gray   { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700; }
+
+  /* Stat card icon colors */
+  .stat-icon-primary   { background-color: var(--color-primary-light);  color: var(--color-primary); }
+  .stat-icon-info      { background-color: var(--color-info-light);     color: var(--color-info-dark); }
+  .stat-icon-success   { background-color: var(--color-success-light);  color: var(--color-success); }
+  .stat-icon-warning   { background-color: var(--color-warning-light);  color: var(--color-warning-dark); }
+  .stat-icon-danger    { background-color: var(--color-danger-light);   color: var(--color-danger); }
+  .stat-icon-secondary { background-color: var(--color-neutral-100);    color: var(--color-secondary); }
+  .stat-icon-green     { background-color: var(--color-success-light);  color: var(--color-success); }
+  .stat-icon-blue      { background-color: var(--color-primary-light);  color: var(--color-primary); }
+  .stat-icon-purple    { background-color: #ede9fe; color: #7c3aed; }
+  .stat-icon-yellow    { background-color: var(--color-warning-light);  color: var(--color-warning-dark); }
+  .stat-icon-red       { background-color: var(--color-danger-light);   color: var(--color-danger); }
+
+  /* Sidebar nav */
+  .nav-active   { background-color: rgba(13,202,240,0.2); color: var(--color-info); }
+  .nav-inactive { color: rgba(255,255,255,0.75); }
+}
+
+.nav-inactive:hover {
+  background-color: rgba(255,255,255,0.1);
+  color: #fff;
 }

@@ -44,7 +44,8 @@ export default function Navbar() {
         >
           <Bell size={18} />
           {unreadCount > 0 && (
-            <span className="absolute top-1 right-1 h-4 w-4 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center">
+            <span className="absolute top-1 right-1 h-4 w-4 rounded-full text-white text-[10px] font-bold flex items-center justify-center"
+              style={{ backgroundColor: 'var(--color-danger)' }}>
               {unreadCount > 9 ? '9+' : unreadCount}
             </span>
           )}

@@ -25,6 +25,8 @@ function RootRedirect() {
 
 // ── Auth pages ────────────────────────────────────────────────
 const Landing        = lazy(() => import('@/pages/Landing'))
+const About          = lazy(() => import('@/pages/About'))
+const Contact        = lazy(() => import('@/pages/Contact'))
 const Login          = lazy(() => import('@/pages/auth/Login'))
 const Register       = lazy(() => import('@/pages/auth/Register'))
 const ForgotPassword = lazy(() => import('@/pages/auth/ForgotPassword'))
@@ -88,6 +90,8 @@ export default function AppRouter() {
           {/* Root — smart redirect based on auth state */}
           <Route path="/"        element={<RootRedirect />} />
           <Route path="/landing" element={<Landing />} />
+          <Route path="/about"   element={<About />} />
+          <Route path="/contact" element={<Contact />} />
           <Route path="/auth/login"     element={<Login />} />
           <Route path="/auth/register"  element={<Register />} />
           <Route path="/auth/forgot"    element={<ForgotPassword />} />
