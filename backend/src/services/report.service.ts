@@ -49,7 +49,7 @@ const addPdfHeader = async (
 
   // Header bar
   page.drawRectangle({ x: 0, y: 780, width, height: 60, color: rgb(0.11, 0.62, 0.46) })
-  page.drawText('Internship Monitoring System', { x: 30, y: 815, size: 11, font, color: rgb(1,1,1) })
+  page.drawText('Internship Connection and Tracking System', { x: 30, y: 815, size: 11, font, color: rgb(1,1,1) })
 
   // Title
   page.drawText(title, { x: 30, y: 750, size: 18, font, color: rgb(0.1, 0.1, 0.1) })
@@ -384,7 +384,7 @@ export const generateInstitutionalExcel = async (
   filters?: { department?: string; year?: number }
 ): Promise<string> => {
   const workbook  = new ExcelJS.Workbook()
-  workbook.creator = 'Internship Monitoring System'
+  workbook.creator = 'Internship Connection and Tracking System'
   workbook.created  = new Date()
 
   // ── Sheet 1: Placement summary ──

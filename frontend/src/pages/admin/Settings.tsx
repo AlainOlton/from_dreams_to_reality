@@ -189,7 +189,7 @@ export default function AdminSettings() {
               <h2 className="text-base font-semibold text-gray-900 mb-5">System information</h2>
               <div className="space-y-3 max-w-md">
                 {[
-                  { label: 'Application',  value: 'Internship Monitoring System' },
+                  { label: 'Application',  value: 'Internship Connection and Tracking System' },
                   { label: 'Version',      value: '1.0.0' },
                   { label: 'Backend',      value: 'Node.js + Express + TypeScript' },
                   { label: 'Database',     value: 'PostgreSQL via Prisma ORM' },

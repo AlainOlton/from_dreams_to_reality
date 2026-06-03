@@ -36,7 +36,7 @@ export const sendVerificationEmail = async (
     to,
     subject: 'Verify your email — Internship System',
     html: `
-      <h2>Welcome to the Internship Monitoring System</h2>
+      <h2>Welcome to the Internship Connection and Tracking System</h2>
       <p>Click the button below to verify your email address.</p>
       <a href="${url}" style="
         display:inline-block;padding:12px 24px;

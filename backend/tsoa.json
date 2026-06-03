@@ -5,7 +5,7 @@
   "spec": {
     "outputDirectory": "src/docs",
     "specVersion": 3,
-    "name": "Internship Monitoring & Connecting System API",
+    "name": "Internship Connection and Tracking System API",
     "description": "Full-stack platform bridging students, companies, and supervisors throughout the internship lifecycle.",
     "version": "1.0.0",
     "contact": {

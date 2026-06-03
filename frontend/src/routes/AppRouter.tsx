@@ -23,7 +23,7 @@ function RootRedirect() {
   return <Navigate to="/landing" replace />
 }
 
-// ── Auth pages ────────────────────────────────────────────────
+// ── Public pages ─────────────────────────────────────────────
 const Landing        = lazy(() => import('@/pages/Landing'))
 const About          = lazy(() => import('@/pages/About'))
 const Contact        = lazy(() => import('@/pages/Contact'))
@@ -32,6 +32,9 @@ const Register       = lazy(() => import('@/pages/auth/Register'))
 const ForgotPassword = lazy(() => import('@/pages/auth/ForgotPassword'))
 const ResetPassword  = lazy(() => import('@/pages/auth/ResetPassword'))
 const VerifyEmail    = lazy(() => import('@/pages/auth/VerifyEmail'))
+
+// ── Shared pages ──────────────────────────────────────────────
+const ProfilePage = lazy(() => import('@/pages/shared/ProfilePage'))
 
 // ── Student pages ─────────────────────────────────────────────
 const StudentDashboard    = lazy(() => import('@/pages/student/Dashboard'))
@@ -89,9 +92,9 @@ export default function AppRouter() {
         <Routes>
           {/* Root — smart redirect based on auth state */}
           <Route path="/"        element={<RootRedirect />} />
-          <Route path="/landing" element={<Landing />} />
-          <Route path="/about"   element={<About />} />
-          <Route path="/contact" element={<Contact />} />
+          <Route path="/landing"  element={<Landing />} />
+          <Route path="/about"    element={<About />} />
+          <Route path="/contact"  element={<Contact />} />
           <Route path="/auth/login"     element={<Login />} />
           <Route path="/auth/register"  element={<Register />} />
           <Route path="/auth/forgot"    element={<ForgotPassword />} />
@@ -109,6 +112,7 @@ export default function AppRouter() {
               <Route path="/student/evaluations"      element={<StudentEvaluations />} />
               <Route path="/student/messages"         element={<StudentMessages />} />
               <Route path="/student/reports"          element={<StudentReports />} />
+              <Route path="/student/profile"          element={<ProfilePage />} />
             </Route>
           </Route>
 
@@ -122,6 +126,7 @@ export default function AppRouter() {
               <Route path="/supervisor/attendance"     element={<SupervisorAttendance />} />
               <Route path="/supervisor/messages"       element={<SupervisorMessages />} />
               <Route path="/supervisor/reports"        element={<SupervisorReports />} />
+              <Route path="/supervisor/profile"        element={<ProfilePage />} />
             </Route>
           </Route>
 
@@ -134,6 +139,7 @@ export default function AppRouter() {
               <Route path="/company/interns"           element={<CompanyInterns />} />
               <Route path="/company/messages"          element={<CompanyMessages />} />
               <Route path="/company/analytics"         element={<CompanyAnalytics />} />
+              <Route path="/company/profile"           element={<ProfilePage />} />
             </Route>
           </Route>
 
@@ -146,6 +152,7 @@ export default function AppRouter() {
               <Route path="/admin/enrollments"         element={<AdminEnrollments />} />
               <Route path="/admin/reports"             element={<AdminReports />} />
               <Route path="/admin/settings"            element={<AdminSettings />} />
+              <Route path="/admin/profile"             element={<ProfilePage />} />
             </Route>
           </Route>
 
@@ -158,6 +165,7 @@ export default function AppRouter() {
               <Route path="/university/evaluations"        element={<UniversityEvaluations />} />
               <Route path="/university/messages"           element={<UniversityMessages />} />
               <Route path="/university/reports"            element={<UniversityReports />} />
+              <Route path="/university/profile"            element={<ProfilePage />} />
             </Route>
           </Route>
 

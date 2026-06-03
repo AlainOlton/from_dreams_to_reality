@@ -1,6 +1,6 @@
 # Product Overview
 
-**Internship Monitoring & Connecting System** — a full-stack web platform that bridges students, companies, academic supervisors, site supervisors, and admins throughout the internship lifecycle.
+**Internship Connection and Tracking System** — a full-stack web platform that bridges students, companies, academic supervisors, site supervisors, and admins throughout the internship lifecycle.
 
 ## Core Capabilities
 

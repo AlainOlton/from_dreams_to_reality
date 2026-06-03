@@ -698,7 +698,7 @@
 		}
 	},
 	"info": {
-		"title": "Internship Monitoring & Connecting System API",
+		"title": "Internship Connection and Tracking System API",
 		"version": "1.0.0",
 		"description": "Full-stack platform bridging students, companies, and supervisors throughout the internship lifecycle.",
 		"license": {
