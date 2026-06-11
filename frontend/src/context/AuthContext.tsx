@@ -14,6 +14,7 @@ interface AuthContextType {
   isLoading:   boolean
   login:       (data: LoginPayload)             => Promise<LoginResult>
   verifyOtp:   (email: string, otp: string)     => Promise<void>
+  resendOtp:   (email: string)                  => Promise<void>
   register:    (data: RegisterPayload)          => Promise<void>
   logout:      ()                               => void
   refreshUser: ()                               => Promise<void>
@@ -61,6 +62,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     await refreshUser()
   }
 
+  // Resend OTP — calls dedicated endpoint, no password needed
+  const resendOtp = async (email: string): Promise<void> => {
+    await authApi.resendOtp(email)
+  }
+
   // Register — no auto-login, user must go through login + OTP flow
   const register = async (data: RegisterPayload): Promise<void> => {
     await authApi.register(data)
@@ -72,10 +78,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem('user')
     setUser(null)
     setToken(null)
+    // Hard redirect — clears all in-memory state and sends user to landing page
+    window.location.href = '/landing'
   }
 
   return (
-    <AuthContext.Provider value={{ user, token, isLoading, login, verifyOtp, register, logout, refreshUser }}>
+    <AuthContext.Provider value={{ user, token, isLoading, login, verifyOtp, resendOtp, register, logout, refreshUser }}>
       {children}
     </AuthContext.Provider>
   )

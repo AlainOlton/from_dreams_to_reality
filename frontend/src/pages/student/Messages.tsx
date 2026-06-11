@@ -208,10 +208,8 @@ export default function StudentMessages() {
                     const { name, role }    = getOtherParticipant(conv)
                     const lastMsg           = conv.messages?.[0]
                     const isActive          = activeConvId === conv.id
-                    // Count messages not sent by me that haven't been read
-                    const unreadCount = conv.messages?.filter(
-                      (m: any) => m.senderId !== user?.id && !m.readAt
-                    ).length ?? 0
+                    // Use backend-computed unread count (based on lastReadAt per participant)
+                    const unreadCount: number = (conv as any).unreadCount ?? 0
                     return (
                       <div
                         key={conv.id}

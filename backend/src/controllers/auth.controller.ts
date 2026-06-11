@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import * as authService from '@/services/auth.service'
-import { sendSuccess, sendCreated, sendError } from '@/utils/apiResponse'
+import { sendSuccess, sendCreated } from '@/utils/apiResponse'
 import { RegisterBody, LoginBody } from '@/types/auth.types'
 
 export const register = async (
@@ -10,10 +10,8 @@ export const register = async (
 ): Promise<void> => {
   try {
     const result = await authService.registerUser(req.body)
-    sendCreated(res, result, 'Registration successful. Please verify your email.')
-  } catch (err) {
-    next(err)
-  }
+    sendCreated(res, result, 'Account created. Please sign in.')
+  } catch (err) { next(err) }
 }
 
 export const login = async (
@@ -23,10 +21,30 @@ export const login = async (
 ): Promise<void> => {
   try {
     const result = await authService.loginUser(req.body)
+    sendSuccess(res, result, 'Verification code sent to your email')
+  } catch (err) { next(err) }
+}
+
+export const verifyOtp = async (
+  req: Request<{}, {}, { email: string; otp: string }>,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const result = await authService.verifyOtp(req.body.email, req.body.otp)
     sendSuccess(res, result, 'Login successful')
-  } catch (err) {
-    next(err)
-  }
+  } catch (err) { next(err) }
+}
+
+export const resendOtp = async (
+  req: Request<{}, {}, { email: string }>,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const result = await authService.resendOtp(req.body.email)
+    sendSuccess(res, result, 'New code sent')
+  } catch (err) { next(err) }
 }
 
 export const verifyEmail = async (
@@ -37,9 +55,7 @@ export const verifyEmail = async (
   try {
     await authService.verifyEmail(req.query.token as string)
     sendSuccess(res, null, 'Email verified successfully')
-  } catch (err) {
-    next(err)
-  }
+  } catch (err) { next(err) }
 }
 
 export const forgotPassword = async (
@@ -50,9 +66,7 @@ export const forgotPassword = async (
   try {
     await authService.forgotPassword(req.body.email)
     sendSuccess(res, null, 'If that email exists, a reset link has been sent')
-  } catch (err) {
-    next(err)
-  }
+  } catch (err) { next(err) }
 }
 
 export const resetPassword = async (
@@ -63,9 +77,7 @@ export const resetPassword = async (
   try {
     await authService.resetPassword(req.body.token, req.body.password)
     sendSuccess(res, null, 'Password reset successfully')
-  } catch (err) {
-    next(err)
-  }
+  } catch (err) { next(err) }
 }
 
 export const getMe = async (
@@ -76,7 +88,5 @@ export const getMe = async (
   try {
     const user = await authService.getMe(req.user!.id)
     sendSuccess(res, user)
-  } catch (err) {
-    next(err)
-  }
+  } catch (err) { next(err) }
 }

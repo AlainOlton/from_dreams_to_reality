@@ -36,7 +36,7 @@ const IS: React.CSSProperties = {
 }
 
 export default function Login() {
-  const { login, verifyOtp, user, isLoading } = useAuth()
+  const { login, verifyOtp, resendOtp, user, isLoading } = useAuth()
   const navigate = useNavigate()
 
   // ── Step state ────────────────────────────────────────────
@@ -124,15 +124,18 @@ export default function Login() {
   const resendCode = async () => {
     setResending(true)
     try {
-      await login({ email: pendingEmail, password: '___resend___' })
-    } catch {
-      // Will fail password check — but that's fine, we just want to resend via a fresh login
-      // For a proper resend we'd need a dedicated endpoint; for now direct user back to step 1
+      const result = await resendOtp(pendingEmail)
+      setCountdown(60)
+      setOtpDigits(['', '', '', '', '', ''])
+      inputRefs.current[0]?.focus()
+      toast.success('New code sent — check your email.')
+      // Update devOtp if returned (dev mode without email config)
+      if ((result as any)?.devOtp) setDevOtp((result as any).devOtp)
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message ?? 'Could not resend code. Try again.')
     } finally {
       setResending(false)
     }
-    setStep('credentials')
-    toast('Please sign in again to request a new code.')
   }
 
   // ── Shared wrapper ────────────────────────────────────────

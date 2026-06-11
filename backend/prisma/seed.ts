@@ -36,7 +36,7 @@ async function main() {
 
   // STUDENT
   const studentUser = await prisma.user.upsert({
-    where: { email: "student@ims.dev" },
+    where: { email: "" },
     update: { password: HASH },
     create: {
       email: "student@ims.dev",
@@ -56,7 +56,7 @@ async function main() {
     include: { studentProfile: true },
   });
 
-  // ACADEMIC SUPERVISOR
+  // ACADEMIC Sstudent@ims.devUPERVISOR
   const academicUser = await prisma.user.upsert({
     where: { email: "academic@ims.dev" },
     update: { password: HASH },

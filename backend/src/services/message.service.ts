@@ -52,7 +52,7 @@ export const sendMessage = async (
 }
 
 export const getConversations = async (userId: string) => {
-  return prisma.conversation.findMany({
+  const conversations = await prisma.conversation.findMany({
     where:   { participants: { some: { userId } } },
     orderBy: { updatedAt: 'desc' },
     include: {
@@ -64,6 +64,25 @@ export const getConversations = async (userId: string) => {
       },
     },
   })
+
+  // Attach unread count to each conversation.
+  // Unread = messages NOT sent by me, sent AFTER my lastReadAt.
+  const withUnread = await Promise.all(conversations.map(async (conv) => {
+    const myParticipant = conv.participants.find((p) => p.userId === userId)
+    const lastReadAt    = myParticipant?.lastReadAt ?? new Date(0)
+
+    const unreadCount = await prisma.message.count({
+      where: {
+        conversationId: conv.id,
+        senderId:       { not: userId },
+        sentAt:         { gt: lastReadAt },
+      },
+    })
+
+    return { ...conv, unreadCount }
+  }))
+
+  return withUnread
 }
 
 export const getMessages = async (userId: string, conversationId: string) => {

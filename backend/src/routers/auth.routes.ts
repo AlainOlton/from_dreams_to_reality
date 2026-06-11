@@ -13,6 +13,8 @@ const router = Router()
 
 router.post('/register',        validateRegister,       validate, auth.register)
 router.post('/login',           validateLogin,          validate, auth.login)
+router.post('/verify-otp',                                        auth.verifyOtp)
+router.post('/resend-otp',                                        auth.resendOtp)
 router.get( '/verify-email',                                      auth.verifyEmail)
 router.post('/forgot-password', validateForgotPassword, validate, auth.forgotPassword)
 router.post('/reset-password',  validateResetPassword,  validate, auth.resetPassword)

@@ -1,12 +1,16 @@
 import nodemailer from 'nodemailer'
 
 const transporter = nodemailer.createTransport({
-  host:   process.env.EMAIL_HOST!,
-  port:   parseInt(process.env.EMAIL_PORT ?? '587'),
-  secure: false,
+  host:       process.env.EMAIL_HOST ?? 'smtp.gmail.com',
+  port:       parseInt(process.env.EMAIL_PORT ?? '587'),
+  secure:     false,   // STARTTLS on port 587
+  requireTLS: true,    // Force STARTTLS upgrade — required for Gmail App Passwords
   auth: {
     user: process.env.EMAIL_USER!,
     pass: process.env.EMAIL_PASS!,
+  },
+  tls: {
+    rejectUnauthorized: false,  // tolerate self-signed certs in dev
   },
 })
 
@@ -70,6 +74,39 @@ export const sendPasswordResetEmail = async (
       <p style="color:#888;font-size:12px;margin-top:16px">
         If you did not request this, you can safely ignore this email.
       </p>`,
+  })
+}
+
+export const sendOtpEmail = async (
+  to:   string,
+  name: string,
+  otp:  string
+): Promise<void> => {
+  await sendEmail({
+    to,
+    subject: 'Your InternHub login verification code',
+    html: `
+      <div style="font-family:'DM Sans',Arial,sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;background:#e8f7fb;border-radius:16px">
+        <div style="text-align:center;margin-bottom:28px">
+          <div style="display:inline-flex;align-items:center;gap:8px">
+            <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#0dcaf0,#0aa8cc);display:inline-flex;align-items:center;justify-content:center">
+              <span style="font-size:18px">🎓</span>
+            </div>
+            <span style="font-family:Georgia,serif;font-size:1.4rem;font-weight:700;color:#0d1a26">Intern<span style="color:#0dcaf0">Hub</span></span>
+          </div>
+        </div>
+        <div style="background:#fff;border-radius:14px;padding:28px;border:1px solid rgba(13,202,240,0.15);box-shadow:0 4px 20px rgba(13,202,240,0.08)">
+          <h2 style="font-family:Georgia,serif;font-size:1.4rem;color:#0d1a26;margin:0 0 8px">Hi ${name},</h2>
+          <p style="color:#5a8fa3;font-size:0.9rem;margin:0 0 24px">Use the code below to complete your sign-in. This code expires in <strong>10 minutes</strong>.</p>
+          <div style="text-align:center;margin:28px 0">
+            <div style="display:inline-block;background:linear-gradient(135deg,#0dcaf0,#0aa8cc);border-radius:12px;padding:18px 40px">
+              <span style="font-family:'Courier New',monospace;font-size:2.2rem;font-weight:700;color:#fff;letter-spacing:0.3em">${otp}</span>
+            </div>
+          </div>
+          <p style="color:#9bbfcc;font-size:0.78rem;text-align:center;margin:0">If you did not attempt to log in, you can safely ignore this email. Your account is secure.</p>
+        </div>
+        <p style="color:#9bbfcc;font-size:0.72rem;text-align:center;margin-top:20px">© ${new Date().getFullYear()} InternHub — Internship Connection and Tracking System</p>
+      </div>`,
   })
 }
 

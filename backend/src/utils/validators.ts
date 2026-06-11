@@ -130,15 +130,26 @@ export const validateScheduleInterview = [
   body('scheduledAt')
     .isISO8601().withMessage('Interview date must be a valid ISO datetime')
     .custom((val: string) => {
-      if (new Date(val) <= new Date()) throw new Error('Interview must be scheduled in the future')
+      // Allow 2-minute buffer to absorb timezone conversion and network latency
+      const twoMinutesAgo = new Date(Date.now() - 2 * 60 * 1000)
+      if (new Date(val) <= twoMinutesAgo) throw new Error('Interview must be scheduled in the future')
       return true
     }),
   body('durationMinutes')
     .optional()
     .isInt({ min: 15, max: 480 }).withMessage('Duration must be between 15 and 480 minutes'),
   body('meetingLink')
-    .optional()
+    .optional({ values: 'falsy' })   // treats empty string as absent
     .isURL().withMessage('Meeting link must be a valid URL'),
+  body('interviewerName')
+    .optional({ values: 'falsy' })
+    .isLength({ max: 100 }).withMessage('Interviewer name too long'),
+  body('location')
+    .optional({ values: 'falsy' })
+    .isLength({ max: 200 }).withMessage('Location too long'),
+  body('notes')
+    .optional({ values: 'falsy' })
+    .isLength({ max: 1000 }).withMessage('Notes too long'),
 ]
 
 // ── Logbook ───────────────────────────────────────────────────

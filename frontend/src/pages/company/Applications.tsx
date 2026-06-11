@@ -63,8 +63,18 @@ export default function CompanyApplications() {
   })
 
   const interviewMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: InterviewForm }) =>
-      applicationApi.scheduleInterview(id, data),
+    mutationFn: ({ id, data }: { id: string; data: InterviewForm }) => {
+      // datetime-local gives "2026-06-17T05:19" with no timezone.
+      // Convert to full ISO-8601 with local offset so the server receives
+      // the correct UTC equivalent and the "must be in future" check passes.
+      const payload = {
+        ...data,
+        scheduledAt: data.scheduledAt
+          ? new Date(data.scheduledAt).toISOString()
+          : data.scheduledAt,
+      }
+      return applicationApi.scheduleInterview(id, payload)
+    },
     onSuccess: () => {
       toast.success('Interview scheduled!')
       setInterviewTarget(null)
