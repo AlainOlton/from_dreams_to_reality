@@ -22,11 +22,15 @@ api.interceptors.response.use(
     const message = error.response?.data?.message ?? 'Something went wrong'
 
     if (status === 401) {
-      // Token expired or invalid — clear storage and redirect
-      localStorage.removeItem('token')
-      localStorage.removeItem('user')
-      if (!window.location.pathname.startsWith('/auth')) {
-        window.location.href = '/auth/login'
+      // Only clear session if we actually had a token (i.e. an authenticated request expired).
+      // During the OTP flow there is no token yet — don't wipe state or redirect.
+      const hadToken = !!localStorage.getItem('token')
+      if (hadToken) {
+        localStorage.removeItem('token')
+        localStorage.removeItem('user')
+        if (!window.location.pathname.startsWith('/auth')) {
+          window.location.href = '/auth/login'
+        }
       }
     } else if (status === 403) {
       toast.error('You do not have permission to do that')

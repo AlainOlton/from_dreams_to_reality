@@ -208,6 +208,10 @@ export default function StudentMessages() {
                     const { name, role }    = getOtherParticipant(conv)
                     const lastMsg           = conv.messages?.[0]
                     const isActive          = activeConvId === conv.id
+                    // Count messages not sent by me that haven't been read
+                    const unreadCount = conv.messages?.filter(
+                      (m: any) => m.senderId !== user?.id && !m.readAt
+                    ).length ?? 0
                     return (
                       <div
                         key={conv.id}
@@ -221,11 +225,31 @@ export default function StudentMessages() {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between">
                             <p className={`text-xs font-semibold truncate ${isActive ? 'text-brand-700' : 'text-gray-900'}`}>{name}</p>
-                            {lastMsg && <p className="text-[10px] text-gray-400 flex-shrink-0 ml-1">{timeAgo(lastMsg.sentAt)}</p>}
+                            <div className="flex items-center gap-1.5 flex-shrink-0 ml-1">
+                              {lastMsg && <p className="text-[10px] text-gray-400">{timeAgo(lastMsg.sentAt)}</p>}
+                              {unreadCount > 0 && (
+                                <span style={{
+                                  minWidth: 18, height: 18,
+                                  borderRadius: '50%',
+                                  background: '#ef4444',
+                                  color: '#fff',
+                                  fontSize: '10px',
+                                  fontWeight: 700,
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  padding: '0 4px',
+                                }}>
+                                  {unreadCount > 9 ? '9+' : unreadCount}
+                                </span>
+                              )}
+                            </div>
                           </div>
                           <p className="text-[10px] text-gray-400 truncate">{role}</p>
                           {lastMsg && (
-                            <p className="text-[11px] text-gray-400 truncate mt-0.5">{lastMsg.content}</p>
+                            <p className={`text-[11px] truncate mt-0.5 ${unreadCount > 0 ? 'font-semibold text-gray-700' : 'text-gray-400'}`}>
+                              {lastMsg.content}
+                            </p>
                           )}
                         </div>
                       </div>

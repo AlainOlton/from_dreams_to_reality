@@ -43,7 +43,6 @@ const schema = z.object({
   skillsGained:   z.string().trim().min(5, 'Skills gained is required (at least 5 characters)').max(1000),
   challenges:     z.string().trim().min(5, 'Challenges is required (at least 5 characters)').max(1000),
   nextWeekPlan:   z.string().trim().min(5, 'Next week plan is required (at least 5 characters)').max(1000),
-  absenceReason:  z.string().trim().max(1000).optional(),
 })
 type EntryForm = z.infer<typeof schema>
 
@@ -258,12 +257,6 @@ export default function StudentLogbook() {
                         <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Next week plan</p>
                         <p className="text-sm text-gray-700">{entry.nextWeekPlan}</p>
                       </div>
-                      {entry.absenceReason && (
-                        <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                          <p className="text-xs font-semibold text-red-600 mb-1">Absence reason</p>
-                          <p className="text-sm text-red-800">{entry.absenceReason}</p>
-                        </div>
-                      )}
                       {entry.supervisorNote && (
                         <div className="bg-brand-50 border border-brand-200 rounded-lg p-3">
                           <p className="text-xs font-semibold text-brand-600 mb-1">Supervisor note</p>
@@ -400,16 +393,6 @@ export default function StudentLogbook() {
             <textarea {...register('nextWeekPlan')} rows={2} className="input resize-none"
               placeholder="What you plan to do next…" />
             {errors.nextWeekPlan && <p className="form-error">{errors.nextWeekPlan.message}</p>}
-          </div>
-
-          <div>
-            <label className="label">
-              Absence reason
-              <span className="ml-1 text-xs text-gray-400">(fill this if you were absent or could not complete tasks)</span>
-            </label>
-            <textarea {...register('absenceReason')} rows={2} className="input resize-none"
-              placeholder="State reason if you were absent or unable to work today…" />
-            {errors.absenceReason && <p className="form-error">{errors.absenceReason.message}</p>}
           </div>
 
           <div>

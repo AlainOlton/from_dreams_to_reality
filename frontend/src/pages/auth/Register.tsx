@@ -79,8 +79,8 @@ export default function Register() {
   const onSubmit = async (data: Form) => {
     try {
       await authRegister(data)
-      toast.success('Account created! Please verify your email.')
-      navigate('/')
+      toast.success('Account created! Please sign in with your credentials.')
+      navigate('/auth/login')
     } catch (err: any) {
       toast.error(err?.response?.data?.message ?? 'Registration failed')
     }

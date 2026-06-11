@@ -2,14 +2,21 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 import { authApi } from '@/api/endpoints'
 import type { AuthUser, LoginPayload, RegisterPayload } from '@/types'
 
+export interface LoginResult {
+  requiresOtp: boolean
+  email:       string
+  devOtp?:     string   // only present in dev when no email is configured
+}
+
 interface AuthContextType {
-  user:     AuthUser | null
-  token:    string | null
-  isLoading:boolean
-  login:    (data: LoginPayload)    => Promise<void>
-  register: (data: RegisterPayload) => Promise<void>
-  logout:   ()                      => void
-  refreshUser: ()                   => Promise<void>
+  user:        AuthUser | null
+  token:       string | null
+  isLoading:   boolean
+  login:       (data: LoginPayload)             => Promise<LoginResult>
+  verifyOtp:   (email: string, otp: string)     => Promise<void>
+  register:    (data: RegisterPayload)          => Promise<void>
+  logout:      ()                               => void
+  refreshUser: ()                               => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | null>(null)
@@ -39,20 +46,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }
 
-  const login = async (data: LoginPayload) => {
-    const res    = await authApi.login(data)
+  // Step 1 — validate credentials, get OTP sent
+  const login = async (data: LoginPayload): Promise<LoginResult> => {
+    const res = await authApi.login(data)
+    return res.data.data as LoginResult
+  }
+
+  // Step 2 — submit OTP, receive JWT
+  const verifyOtp = async (email: string, otp: string): Promise<void> => {
+    const res = await authApi.verifyOtp(email, otp)
     const { token: t } = res.data.data
     localStorage.setItem('token', t)
     setToken(t)
     await refreshUser()
   }
 
-  const register = async (data: RegisterPayload) => {
-    const res = await authApi.register(data)
-    const { token: t } = res.data.data
-    localStorage.setItem('token', t)
-    setToken(t)
-    await refreshUser()
+  // Register — no auto-login, user must go through login + OTP flow
+  const register = async (data: RegisterPayload): Promise<void> => {
+    await authApi.register(data)
+    // Do NOT store token or set user — redirect to /auth/login happens in the component
   }
 
   const logout = () => {
@@ -63,7 +75,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ user, token, isLoading, login, register, logout, refreshUser }}>
+    <AuthContext.Provider value={{ user, token, isLoading, login, verifyOtp, register, logout, refreshUser }}>
       {children}
     </AuthContext.Provider>
   )

@@ -9,6 +9,8 @@ import type {
 export const authApi = {
   register:       (data: RegisterPayload)                       => api.post('/auth/register', data),
   login:          (data: LoginPayload)                          => api.post('/auth/login', data),
+  verifyOtp:      (email: string, otp: string)                  => api.post('/auth/verify-otp', { email, otp }),
+  resendOtp:      (email: string)                               => api.post('/auth/resend-otp', { email }),
   me:             ()                                            => api.get('/auth/me'),
   verifyEmail:    (token: string)                               => api.get(`/auth/verify-email?token=${token}`),
   forgotPassword: (email: string)                              => api.post('/auth/forgot-password', { email }),
